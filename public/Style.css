@@ -1,20 +1,44 @@
 body {
     font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    margin: 0;
     padding: 20px;
-    background-color: #f4f4f4;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
 }
 
 .container {
-    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
 }
 
-input {
-    padding: 10px;
-    font-size: 16px;
+.card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    transition: 0.3s;
 }
 
-button {
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card h2 {
+    margin-top: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    padding-bottom: 5px;
+}
+
+.item {
+    background: rgba(255,255,255,0.15);
+    margin: 10px 0;
     padding: 10px;
-    font-size: 16px;
-    cursor: pointer;
+    border-radius: 10px;
 }

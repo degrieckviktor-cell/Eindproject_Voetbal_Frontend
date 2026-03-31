@@ -2,20 +2,39 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Mijn Project</title>
+    <title>Voetbal Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1>Mijn Frontend</h1>
+    <h1>⚽ Dashboard</h1>
 
     <div class="container">
-        <input type="text" id="inputField" placeholder="Typ iets..." />
-        <button onclick="verzendData()">Verstuur</button>
-    </div>
+        <div class="card">
+            <h2>Matches</h2>
+            <div class="weer" id="matches"></div>
+        </div>
 
-    <h2>Resultaat:</h2>
-    <p id="resultaat">Nog geen data</p>
+        <div class="card">
+            <h2>Divisions</h2>
+            <div class="weer" id="divisions"></div>
+        </div>
+
+        <div class="card">
+            <h2>Players</h2>
+            <div class="weer" id="players"></div>
+        </div>
+
+        <div class="card">
+            <h2>Regions</h2>
+            <div class="weer" id="regions"></div>
+        </div>
+
+        <div class="card">
+            <h2>Teams</h2>
+            <div class="weer" id="teams"></div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
