@@ -7,47 +7,24 @@
 </head>
 <body>
 
-    <h1>⚽ Dashboard</h1>
     <nav class="navbar">
-        <div class="nav-title">Menu</div>
-        <div class="dropdown">
-            <button class="dropbtn">Kies pagina ⬇</button>
-            <div class="dropdown-content">
-                <a href="matches.html">Matches</a>
-                <a href="divisions.html">Divisions</a>
-                <a href="players.html">Players</a>
-                <a href="regions.html">Regions</a>
-                <a href="teams.html">Teams</a>
-            </div>
-        </div>
-    </nav>
+    <div class="logo">⚽ Dashboard</div>
 
-    <div class="container">
-        <div class="card">
-            <h2>Matches</h2>
-            <div class="weer" id="matches"></div>
-        </div>
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
 
-        <div class="card">
-            <h2>Divisions</h2>
-            <div class="weer" id="divisions"></div>
-        </div>
-
-        <div class="card">
-            <h2>Players</h2>
-            <div class="weer" id="players"></div>
-        </div>
-
-        <div class="card">
-            <h2>Regions</h2>
-            <div class="weer" id="regions"></div>
-        </div>
-
-        <div class="card">
-            <h2>Teams</h2>
-            <div class="weer" id="teams"></div>
-        </div>
-    </div>
+        <li class="dropdown">
+            <span class="drop-trigger">Pages ▾</span>
+            <ul class="dropdown-menu">
+                <li><a href="matches.html">Matches</a></li>
+                <li><a href="divisions.html">Divisions</a></li>
+                <li><a href="players.html">Players</a></li>
+                <li><a href="regions.html">Regions</a></li>
+                <li><a href="teams.html">Teams</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
 
     <script src="script.js"></script>
 </body>
