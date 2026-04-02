@@ -4,78 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Matches</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
 
-    header {
-      background-color: #333;
-      color: white;
-      padding: 15px;
-      text-align: center;
-    }
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
 
-    .container {
-      padding: 20px;
-    }
-
-    .match {
-      background: white;
-      margin-bottom: 15px;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .teams {
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .score {
-      font-size: 16px;
-      margin-top: 5px;
-    }
-
-    .date {
-      font-size: 14px;
-      color: gray;
-      margin-top: 5px;
-    }
-
-    .back-button {
-      display: inline-block;
-      margin-bottom: 20px;
-      padding: 10px 15px;
-      background-color: #333;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-    }
-
-    .back-button:hover {
-      background-color: #555;
-    }
-  </style>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
-<header>
-  <h1>Gespeelde Wedstrijden</h1>
-</header>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">Football<span>Intel</span></div>
 
-<div class="container">
-  <a href="index.html" class="back-button">⬅ Terug naar Home</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="matches.html" class="active">Matches</a>
+    <a href="Standings.html">Standings</a>
+    <a href="Teams.html">Teams</a>
+  </div>
+
+  <button class="cta">Explore</button>
+</nav>
+
+<!-- HERO / HEADER -->
+<section class="hero">
+  <h1>Match <span>History</span></h1>
+</section>
+
+<!-- CONTENT -->
+<main class="container">
 
   <div id="matches-list"></div>
-</div>
 
+</main>
+
+<!-- SCRIPT -->
 <script>
-  // Dit is voorbeeld data - vervang dit later met data uit je database
   const matches = [
     { team1: "Team A", team2: "Team B", score: "2 - 1", date: "2026-04-01" },
     { team1: "Team C", team2: "Team D", score: "0 - 0", date: "2026-03-30" },

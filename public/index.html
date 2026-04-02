@@ -2,28 +2,76 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Voetbal Dashboard</title>
+    <title>Football Intelligence</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <nav class="navbar">
-    <div class="logo">Dashboard</div>
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="logo">Football<span>Intel</span></div>
 
-    <ul class="nav-links">
+    <div class="nav-links">
+        <a href="index.html" class="active">Home</a>
+        <a href="matches.html">Matches</a>
+        <a href="Standings.html">Standings</a>
+        <a href="Teams.html">Teams</a>
+    </div>
 
-        <li class="dropdown">
-            <span class="drop-trigger">Pages ▾</span>
-            <ul class="dropdown-menu">
-                <li><a href="matches.html">Matches</a></li>
-                <li><a href="Standings.html">Standings</a></li>
-                <li><a href="Teams.html">Teams</a></li>
-                <li><a href="Teams_Details.html">Team Details</a></li>
-            </ul>
-        </li>
-    </ul>
+    <button class="cta">Explore</button>
 </nav>
 
-    <script src="script.js"></script>
+<!-- HERO -->
+<section class="hero">
+    <h1>
+        Football <span>Intelligence</span>
+    </h1>
+
+    <p>
+        Een futuristisch platform waar data, strategie en inzicht samenkomen in een warme high-end interface.
+    </p>
+
+    <div class="hero-buttons">
+        <button class="btn-primary">Start</button>
+        <button class="btn-ghost">Learn more</button>
+    </div>
+</section>
+
+<!-- DASHBOARD -->
+<main class="container">
+
+    <div class="card">
+        <h2>Matches</h2>
+        <div class="weer" id="matches"></div>
+    </div>
+
+    <div class="card">
+        <h2>Divisions</h2>
+        <div class="weer" id="divisions"></div>
+    </div>
+
+    <div class="card">
+        <h2>Players</h2>
+        <div class="weer" id="players"></div>
+    </div>
+
+    <div class="card">
+        <h2>Regions</h2>
+        <div class="weer" id="regions"></div>
+    </div>
+
+    <div class="card">
+        <h2>Teams</h2>
+        <div class="weer" id="teams"></div>
+    </div>
+
+</main>
+
+<script src="script.js"></script>
 </body>
 </html>
