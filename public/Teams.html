@@ -4,200 +4,134 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teams</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
 
-    header {
-      background-color: #333;
-      color: white;
-      padding: 15px;
-      text-align: center;
-    }
+  <link rel="stylesheet" href="style.css">
 
-    .container {
-      padding: 20px;
-    }
-
-    .back-button {
-      display: inline-block;
-      margin-bottom: 20px;
-      padding: 10px 15px;
-      background-color: #333;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-    }
-
-    .team {
-      background: white;
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 10px;
-      cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .team:hover {
-      background-color: #eee;
-    }
-
-    .section-title {
-      margin-top: 10px;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    .players, .matches {
-      margin-top: 5px;
-      padding-left: 15px;
-      display: none;
-    }
-
-    .player, .match {
-      font-size: 14px;
-      padding: 3px 0;
-    }
-
-    .played {
-      color: green;
-    }
-
-    .upcoming {
-      color: orange;
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
-<header>
-  <h1>Teams</h1>
-</header>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">Football<span>Intel</span></div>
 
-<div class="container">
-  <a href="index.html" class="back-button">⬅ Terug naar Home</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="matches.html">Matches</a>
+    <a href="Standings.html">Standings</a>
+    <a href="Teams.html" class="active">Teams</a>
+  </div>
 
+  <button class="cta">Explore</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>All <span>Teams</span></h1>
+  <p>Klik op een team om spelers en wedstrijden te bekijken.</p>
+</section>
+
+<!-- CONTENT -->
+<main class="container">
   <div id="teams-list"></div>
-</div>
+</main>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    loadTeams();
-  });
+document.addEventListener("DOMContentLoaded", () => {
+  loadTeams();
+});
 
-  // 🔥 FAKE DATA
-  const teams = [
-    { id: 1, name: "Team A" },
-    { id: 2, name: "Team B" },
-    { id: 3, name: "Team C" }
-  ];
+// DATA
+const teams = [
+  { id: 1, name: "Team A" },
+  { id: 2, name: "Team B" },
+  { id: 3, name: "Team C" }
+];
 
-  const players = {
-    1: [
-      { name: "Speler A1" },
-      { name: "Speler A2" }
-    ],
-    2: [
-      { name: "Speler B1" },
-      { name: "Speler B2" }
-    ],
-    3: [
-      { name: "Speler C1" }
-    ]
-  };
+const players = {
+  1: [{ name: "Speler A1" }, { name: "Speler A2" }],
+  2: [{ name: "Speler B1" }, { name: "Speler B2" }],
+  3: [{ name: "Speler C1" }]
+};
 
-  const matches = {
-    1: {
-      played: [
-        { vs: "Team B", score: "2-1" },
-        { vs: "Team C", score: "1-1" }
-      ],
-      upcoming: [
-        { vs: "Team B", date: "2026-04-10" }
-      ]
-    },
-    2: {
-      played: [
-        { vs: "Team A", score: "1-2" }
-      ],
-      upcoming: [
-        { vs: "Team C", date: "2026-04-12" }
-      ]
-    },
-    3: {
-      played: [
-        { vs: "Team A", score: "1-1" }
-      ],
-      upcoming: [
-        { vs: "Team B", date: "2026-04-12" }
-      ]
-    }
-  };
-
-  function loadTeams() {
-    const container = document.getElementById("teams-list");
-    container.innerHTML = "";
-
-    teams.forEach(team => {
-      const div = document.createElement("div");
-      div.classList.add("team");
-
-      const playersDiv = document.createElement("div");
-      playersDiv.classList.add("players");
-
-      const matchesDiv = document.createElement("div");
-      matchesDiv.classList.add("matches");
-
-      div.innerHTML = `<strong>${team.name}</strong>`;
-
-      div.addEventListener("click", () => {
-        const isOpen = playersDiv.style.display === "block";
-
-        playersDiv.style.display = isOpen ? "none" : "block";
-        matchesDiv.style.display = isOpen ? "none" : "block";
-
-        if (!isOpen) {
-          // spelers
-          playersDiv.innerHTML = '<div class="section-title">Spelers:</div>';
-          players[team.id].forEach(player => {
-            const p = document.createElement("div");
-            p.classList.add("player");
-            p.textContent = player.name;
-            playersDiv.appendChild(p);
-          });
-
-          // wedstrijden
-          matchesDiv.innerHTML = '<div class="section-title">Gespeelde wedstrijden:</div>';
-          matches[team.id].played.forEach(m => {
-            const el = document.createElement("div");
-            el.classList.add("match", "played");
-            el.textContent = `${team.name} vs ${m.vs} (${m.score})`;
-            matchesDiv.appendChild(el);
-          });
-
-          const upcomingTitle = document.createElement("div");
-          upcomingTitle.classList.add("section-title");
-          upcomingTitle.textContent = "Komende wedstrijden:";
-          matchesDiv.appendChild(upcomingTitle);
-
-          matches[team.id].upcoming.forEach(m => {
-            const el = document.createElement("div");
-            el.classList.add("match", "upcoming");
-            el.textContent = `${team.name} vs ${m.vs} (${m.date})`;
-            matchesDiv.appendChild(el);
-          });
-        }
-      });
-
-      div.appendChild(playersDiv);
-      div.appendChild(matchesDiv);
-      container.appendChild(div);
-    });
+const matches = {
+  1: {
+    played: [{ vs: "Team B", score: "2-1" }, { vs: "Team C", score: "1-1" }],
+    upcoming: [{ vs: "Team B", date: "2026-04-10" }]
+  },
+  2: {
+    played: [{ vs: "Team A", score: "1-2" }],
+    upcoming: [{ vs: "Team C", date: "2026-04-12" }]
+  },
+  3: {
+    played: [{ vs: "Team A", score: "1-1" }],
+    upcoming: [{ vs: "Team B", date: "2026-04-12" }]
   }
+};
+
+function loadTeams() {
+  const container = document.getElementById("teams-list");
+  container.innerHTML = "";
+
+  teams.forEach(team => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+
+    const playersDiv = document.createElement("div");
+    playersDiv.classList.add("players");
+
+    const matchesDiv = document.createElement("div");
+    matchesDiv.classList.add("matches");
+
+    card.innerHTML = `<strong>${team.name}</strong>`;
+
+    card.addEventListener("click", () => {
+      const isOpen = playersDiv.style.display === "block";
+
+      playersDiv.style.display = isOpen ? "none" : "block";
+      matchesDiv.style.display = isOpen ? "none" : "block";
+
+      if (!isOpen) {
+
+        // PLAYERS
+        playersDiv.innerHTML = '<div class="section-title">Spelers:</div>';
+        players[team.id].forEach(player => {
+          const p = document.createElement("div");
+          p.classList.add("player");
+          p.textContent = player.name;
+          playersDiv.appendChild(p);
+        });
+
+        // MATCHES
+        matchesDiv.innerHTML = '<div class="section-title">Gespeelde wedstrijden:</div>';
+        matches[team.id].played.forEach(m => {
+          const el = document.createElement("div");
+          el.classList.add("match", "played");
+          el.textContent = `${team.name} vs ${m.vs} (${m.score})`;
+          matchesDiv.appendChild(el);
+        });
+
+        const upcomingTitle = document.createElement("div");
+        upcomingTitle.classList.add("section-title");
+        upcomingTitle.textContent = "Komende wedstrijden:";
+        matchesDiv.appendChild(upcomingTitle);
+
+        matches[team.id].upcoming.forEach(m => {
+          const el = document.createElement("div");
+          el.classList.add("match", "upcoming");
+          el.textContent = `${team.name} vs ${m.vs} (${m.date})`;
+          matchesDiv.appendChild(el);
+        });
+      }
+    });
+
+    card.appendChild(playersDiv);
+    card.appendChild(matchesDiv);
+
+    container.appendChild(card);
+  });
+}
 </script>
 
 </body>

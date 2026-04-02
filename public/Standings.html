@@ -4,93 +4,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Standings</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
 
-    header {
-      background-color: #333;
-      color: white;
-      padding: 15px;
-      text-align: center;
-    }
+  <link rel="stylesheet" href="style.css">
 
-    .container {
-      padding: 20px;
-    }
-
-    .back-button {
-      display: inline-block;
-      margin-bottom: 20px;
-      padding: 10px 15px;
-      background-color: #333;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-    }
-
-    .back-button:hover {
-      background-color: #555;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    th, td {
-      padding: 12px;
-      text-align: center;
-      border-bottom: 1px solid #ddd;
-    }
-
-    th {
-      background-color: #333;
-      color: white;
-    }
-
-    tr:hover {
-      background-color: #f1f1f1;
-    }
-
-    .team {
-      text-align: left;
-      font-weight: bold;
-    }
-
-    /* Kleuren */
-    .gold {
-      background-color: gold;
-      font-weight: bold;
-    }
-
-    .top3 {
-      background-color: #c8f7c5;
-    }
-
-    .bottom {
-      background-color: #f7c5c5;
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
-<header>
-  <h1>Klassement</h1>
-</header>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">Football<span>Intel</span></div>
 
-<div class="container">
-  <a href="index.html" class="back-button">⬅ Terug naar Home</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="matches.html">Matches</a>
+    <a href="Standings.html" class="active">Standings</a>
+    <a href="Teams.html">Teams</a>
+  </div>
 
-  <table>
+  <button class="cta">Explore</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>League <span>Standings</span></h1>
+  <p>Analyseer de ranglijst van teams in een warm, futuristisch dashboard.</p>
+</section>
+
+<!-- CONTENT -->
+<main class="container">
+
+  <table class="table">
     <thead>
       <tr>
         <th>#</th>
@@ -104,9 +49,11 @@
         <th>P</th>
       </tr>
     </thead>
+
     <tbody id="standings-body"></tbody>
   </table>
-</div>
+
+</main>
 
 <script>
   let standings = [
@@ -126,17 +73,6 @@
 
     standings.forEach((team, index) => {
       const tr = document.createElement("tr");
-
-      // Styling logica
-      if (index === 0) {
-        tr.classList.add("gold");
-      } else if (index < 3) {
-        tr.classList.add("top3");
-      }
-
-      if (index >= standings.length - 2) {
-        tr.classList.add("bottom");
-      }
 
       tr.innerHTML = `
         <td>${index + 1}</td>

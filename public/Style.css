@@ -23,7 +23,7 @@ body {
     color: var(--text-main);
 }
 
-/* TITELS */
+/* TITLES */
 h1, h2 {
     font-family: 'Space Grotesk', sans-serif;
     letter-spacing: 0.05em;
@@ -42,7 +42,7 @@ h1, h2 {
 
     padding: 15px 40px;
 
-    background: rgba(26,16,8,0.6);
+    background: rgba(26,16,8,0.65);
     backdrop-filter: blur(12px);
 
     border-bottom: 1px solid rgba(216,90,48,0.2);
@@ -61,6 +61,7 @@ h1, h2 {
     position: relative;
 }
 
+/* ACTIVE LINK */
 .nav-links a.active::after {
     content: "";
     position: absolute;
@@ -73,7 +74,7 @@ h1, h2 {
     background: var(--accent);
 }
 
-/* CTA */
+/* CTA BUTTON */
 .cta {
     background: var(--accent-light);
     color: var(--bg-dark);
@@ -83,6 +84,12 @@ h1, h2 {
 
     padding: 8px 14px;
     cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.cta:hover {
+    transform: translateY(-2px);
 }
 
 /* =======================
@@ -90,7 +97,7 @@ h1, h2 {
 ======================= */
 .hero {
     text-align: center;
-    padding: 100px 20px;
+    padding: 80px 20px;
 }
 
 .hero span {
@@ -98,13 +105,9 @@ h1, h2 {
 }
 
 /* =======================
-   CONTAINER
+   CONTAINER (FIX)
 ======================= */
 .container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-
-    gap: 25px;
     padding: 40px;
 }
 
@@ -176,4 +179,150 @@ h1, h2 {
 .btn-primary:hover,
 .btn-ghost:hover {
     transform: translateY(-2px);
+}
+
+/* =======================
+   TABLE (FIXED + FULL WIDTH)
+======================= */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+
+    background: var(--bg-card);
+
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* HEADER */
+.table th {
+    background: var(--bg-dark);
+    color: var(--accent-light);
+
+    padding: 14px;
+    font-weight: 600;
+}
+
+/* CELLS */
+.table td {
+    padding: 12px;
+    text-align: center;
+
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+
+    color: var(--text-main);
+}
+
+/* HOVER */
+.table tr:hover {
+    background: rgba(216,90,48,0.08);
+}
+
+/* TEAM COLUMN */
+.team {
+    text-align: left;
+    font-weight: bold;
+}
+
+/* TOP TEAM */
+.table tbody tr:first-child {
+    background: rgba(239,159,39,0.15);
+}
+
+/* =======================
+   EXTRA POLISH
+======================= */
+
+/* Subtle glow when hovering table */
+.table tr {
+    transition: 0.2s;
+}
+/* =======================
+   RANKING COLORS
+======================= */
+
+/* 1ST PLACE (GOLD) */
+.table tbody tr:first-child {
+    background: rgba(239, 159, 39, 0.18);
+}
+
+/* 2ND + 3RD PLACE (DARK GREEN) */
+.table tbody tr:nth-child(2),
+.table tbody tr:nth-child(3) {
+    background: rgba(40, 90, 50, 0.35);
+}
+
+/* 4TH + 5TH PLACE (DARK RED) */
+.table tbody tr:nth-child(4),
+.table tbody tr:nth-child(5) {
+    background: rgba(90, 30, 30, 0.35);
+}
+
+/* OPTIONAL: subtle hover enhancement per kleur */
+.table tbody tr:nth-child(-n+3):hover {
+    background: rgba(239, 159, 39, 0.25);
+}
+
+.table tbody tr:nth-child(4),
+.table tbody tr:nth-child(5):hover {
+    background: rgba(120, 40, 40, 0.45);
+}
+/* =======================
+   TEAM PAGE SPECIFICS
+======================= */
+
+.players,
+.matches {
+    margin-top: 10px;
+    padding-left: 10px;
+    display: none;
+}
+
+/* TITLES */
+.section-title {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 13px;
+
+    color: var(--accent-light);
+}
+
+/* PLAYER TEXT */
+.player {
+    font-size: 14px;
+    padding: 3px 0;
+    color: var(--text-muted);
+}
+
+/* MATCH ITEMS */
+.match {
+    font-size: 14px;
+    padding: 4px 0;
+}
+
+/* PLAYED MATCH */
+.played {
+    color: var(--accent-light);
+}
+
+/* UPCOMING MATCH */
+.upcoming {
+    color: var(--accent);
+}
+
+/* OPEN ANIMATION */
+.players,
+.matches {
+    animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
