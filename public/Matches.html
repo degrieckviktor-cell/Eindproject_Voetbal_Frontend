@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matches</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .match {
+      background: white;
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .teams {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .score {
+      font-size: 16px;
+      margin-top: 5px;
+    }
+
+    .date {
+      font-size: 14px;
+      color: gray;
+      margin-top: 5px;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 15px;
+      background-color: #333;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    .back-button:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Gespeelde Wedstrijden</h1>
+</header>
+
+<div class="container">
+  <a href="index.html" class="back-button">⬅ Terug naar Home</a>
+
+  <div id="matches-list"></div>
+</div>
+
+<script>
+  // Dit is voorbeeld data - vervang dit later met data uit je database
+  const matches = [
+    { team1: "Team A", team2: "Team B", score: "2 - 1", date: "2026-04-01" },
+    { team1: "Team C", team2: "Team D", score: "0 - 0", date: "2026-03-30" },
+    { team1: "Team E", team2: "Team F", score: "3 - 2", date: "2026-03-28" }
+  ];
+
+  const container = document.getElementById("matches-list");
+
+  function renderMatches() {
+    container.innerHTML = "";
+
+    matches.forEach(match => {
+      const div = document.createElement("div");
+      div.classList.add("match");
+
+      div.innerHTML = `
+        <div class="teams">${match.team1} vs ${match.team2}</div>
+        <div class="score">Score: ${match.score}</div>
+        <div class="date">Datum: ${match.date}</div>
+      `;
+
+      container.appendChild(div);
+    });
+  }
+
+  renderMatches();
+</script>
+
+</body>
+</html>
