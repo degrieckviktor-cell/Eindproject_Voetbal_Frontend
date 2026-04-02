@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Standings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 15px;
+      background-color: #333;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    .back-button:hover {
+      background-color: #555;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #333;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .team {
+      text-align: left;
+      font-weight: bold;
+    }
+
+    /* Kleuren */
+    .gold {
+      background-color: gold;
+      font-weight: bold;
+    }
+
+    .top3 {
+      background-color: #c8f7c5;
+    }
+
+    .bottom {
+      background-color: #f7c5c5;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Klassement</h1>
+</header>
+
+<div class="container">
+  <a href="index.html" class="back-button">⬅ Terug naar Home</a>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Team</th>
+        <th>GS</th>
+        <th>W</th>
+        <th>G</th>
+        <th>V</th>
+        <th>DV</th>
+        <th>DT</th>
+        <th>P</th>
+      </tr>
+    </thead>
+    <tbody id="standings-body"></tbody>
+  </table>
+</div>
+
+<script>
+  let standings = [
+    { team: "Team A", played: 10, wins: 7, draws: 2, losses: 1, goalsFor: 20, goalsAgainst: 10, points: 23 },
+    { team: "Team B", played: 10, wins: 6, draws: 1, losses: 3, goalsFor: 18, goalsAgainst: 12, points: 19 },
+    { team: "Team C", played: 10, wins: 5, draws: 3, losses: 2, goalsFor: 15, goalsAgainst: 11, points: 18 },
+    { team: "Team D", played: 10, wins: 3, draws: 2, losses: 5, goalsFor: 10, goalsAgainst: 15, points: 11 },
+    { team: "Team E", played: 10, wins: 2, draws: 1, losses: 7, goalsFor: 8, goalsAgainst: 20, points: 7 }
+  ];
+
+  const tbody = document.getElementById("standings-body");
+
+  function renderStandings() {
+    tbody.innerHTML = "";
+
+    standings.sort((a, b) => b.points - a.points);
+
+    standings.forEach((team, index) => {
+      const tr = document.createElement("tr");
+
+      // Styling logica
+      if (index === 0) {
+        tr.classList.add("gold");
+      } else if (index < 3) {
+        tr.classList.add("top3");
+      }
+
+      if (index >= standings.length - 2) {
+        tr.classList.add("bottom");
+      }
+
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td class="team">${team.team}</td>
+        <td>${team.played}</td>
+        <td>${team.wins}</td>
+        <td>${team.draws}</td>
+        <td>${team.losses}</td>
+        <td>${team.goalsFor}</td>
+        <td>${team.goalsAgainst}</td>
+        <td>${team.points}</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  renderStandings();
+</script>
+
+</body>
+</html>
