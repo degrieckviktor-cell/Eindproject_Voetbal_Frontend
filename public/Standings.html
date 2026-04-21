@@ -4,25 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Standings</title>
-
   <link rel="stylesheet" href="style.css">
-
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="logo">Football<span>Intel</span></div>
-
   <div class="nav-links">
     <a href="index.html">Home</a>
     <a href="matches.html">Matches</a>
     <a href="Standings.html" class="active">Standings</a>
     <a href="Teams.html">Teams</a>
   </div>
-
   <button class="cta">Explore</button>
 </nav>
 
@@ -34,7 +29,6 @@
 
 <!-- CONTENT -->
 <main class="container">
-
   <table class="table">
     <thead>
       <tr>
@@ -49,48 +43,100 @@
         <th>P</th>
       </tr>
     </thead>
-
     <tbody id="standings-body"></tbody>
   </table>
-
 </main>
 
+<script src="script.js"></script>
 <script>
-  let standings = [
-    { team: "Team A", played: 10, wins: 7, draws: 2, losses: 1, goalsFor: 20, goalsAgainst: 10, points: 23 },
-    { team: "Team B", played: 10, wins: 6, draws: 1, losses: 3, goalsFor: 18, goalsAgainst: 12, points: 19 },
-    { team: "Team C", played: 10, wins: 5, draws: 3, losses: 2, goalsFor: 15, goalsAgainst: 11, points: 18 },
-    { team: "Team D", played: 10, wins: 3, draws: 2, losses: 5, goalsFor: 10, goalsAgainst: 15, points: 11 },
-    { team: "Team E", played: 10, wins: 2, draws: 1, losses: 7, goalsFor: 8, goalsAgainst: 20, points: 7 }
-  ];
+  document.addEventListener("DOMContentLoaded", () => {
+    const tbody = document.getElementById("standings-body");
 
-  const tbody = document.getElementById("standings-body");
+    Promise.all([
+      fetch("http://localhost:5153/api/match").then(r => r.json()),
+      fetch("http://localhost:5153/api/Team").then(r => r.json())
+    ])
+    .then(([matches, teams]) => {
 
-  function renderStandings() {
-    tbody.innerHTML = "";
+      // Maak opzoektabel teamId -> teamnaam
+      const teamMap = {};
+      teams.forEach(team => {
+        teamMap[team.teamId] = team.name;
+      });
 
-    standings.sort((a, b) => b.points - a.points);
+      // Bereken standings vanuit matches
+      const standings = {};
 
-    standings.forEach((team, index) => {
-      const tr = document.createElement("tr");
+      teams.forEach(team => {
+        standings[team.teamId] = {
+          team: team.name,
+          played: 0,
+          wins: 0,
+          draws: 0,
+          losses: 0,
+          goalsFor: 0,
+          goalsAgainst: 0,
+          points: 0
+        };
+      });
 
-      tr.innerHTML = `
-        <td>${index + 1}</td>
-        <td class="team">${team.team}</td>
-        <td>${team.played}</td>
-        <td>${team.wins}</td>
-        <td>${team.draws}</td>
-        <td>${team.losses}</td>
-        <td>${team.goalsFor}</td>
-        <td>${team.goalsAgainst}</td>
-        <td>${team.points}</td>
-      `;
+      matches.forEach(match => {
+        const home = match.homeTeamId;
+        const away = match.awayTeamId;
+        const homeScore = match.homeScore;
+        const awayScore = match.awayScore;
 
-      tbody.appendChild(tr);
+        if (!standings[home] || !standings[away]) return;
+
+        standings[home].played++;
+        standings[away].played++;
+        standings[home].goalsFor += homeScore;
+        standings[home].goalsAgainst += awayScore;
+        standings[away].goalsFor += awayScore;
+        standings[away].goalsAgainst += homeScore;
+
+        if (homeScore > awayScore) {
+          standings[home].wins++;
+          standings[home].points += 3;
+          standings[away].losses++;
+        } else if (homeScore < awayScore) {
+          standings[away].wins++;
+          standings[away].points += 3;
+          standings[home].losses++;
+        } else {
+          standings[home].draws++;
+          standings[home].points += 1;
+          standings[away].draws++;
+          standings[away].points += 1;
+        }
+      });
+
+      // Sorteer op punten
+      const sorted = Object.values(standings).sort((a, b) => b.points - a.points);
+
+      // Render de tabel
+      tbody.innerHTML = "";
+      sorted.forEach((team, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td class="team">${team.team}</td>
+          <td>${team.played}</td>
+          <td>${team.wins}</td>
+          <td>${team.draws}</td>
+          <td>${team.losses}</td>
+          <td>${team.goalsFor}</td>
+          <td>${team.goalsAgainst}</td>
+          <td>${team.points}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    })
+    .catch(error => {
+      console.error("Fout bij ophalen data:", error);
+      tbody.innerHTML = "<tr><td colspan='9'>Kon data niet laden.</td></tr>";
     });
-  }
-
-  renderStandings();
+  });
 </script>
 
 </body>

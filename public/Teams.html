@@ -4,25 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teams</title>
-
   <link rel="stylesheet" href="style.css">
-
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="logo">Football<span>Intel</span></div>
-
   <div class="nav-links">
     <a href="index.html">Home</a>
     <a href="matches.html">Matches</a>
     <a href="Standings.html">Standings</a>
     <a href="Teams.html" class="active">Teams</a>
   </div>
-
   <button class="cta">Explore</button>
 </nav>
 
@@ -37,101 +32,138 @@
   <div id="teams-list"></div>
 </main>
 
+<script src="script.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  loadTeams();
-});
-
-// DATA
-const teams = [
-  { id: 1, name: "Team A" },
-  { id: 2, name: "Team B" },
-  { id: 3, name: "Team C" }
-];
-
-const players = {
-  1: [{ name: "Speler A1" }, { name: "Speler A2" }],
-  2: [{ name: "Speler B1" }, { name: "Speler B2" }],
-  3: [{ name: "Speler C1" }]
-};
-
-const matches = {
-  1: {
-    played: [{ vs: "Team B", score: "2-1" }, { vs: "Team C", score: "1-1" }],
-    upcoming: [{ vs: "Team B", date: "2026-04-10" }]
-  },
-  2: {
-    played: [{ vs: "Team A", score: "1-2" }],
-    upcoming: [{ vs: "Team C", date: "2026-04-12" }]
-  },
-  3: {
-    played: [{ vs: "Team A", score: "1-1" }],
-    upcoming: [{ vs: "Team B", date: "2026-04-12" }]
-  }
-};
-
-function loadTeams() {
   const container = document.getElementById("teams-list");
-  container.innerHTML = "";
 
-  teams.forEach(team => {
-    const card = document.createElement("div");
-    card.classList.add("card");
+  Promise.all([
+    fetch("http://localhost:5153/api/Team").then(r => r.json()),
+    fetch("http://localhost:5153/api/Player").then(r => r.json()),
+    fetch("http://localhost:5153/api/match").then(r => r.json())
+  ])
+  .then(([teams, players, matches]) => {
 
-    const playersDiv = document.createElement("div");
-    playersDiv.classList.add("players");
+    // teamId -> teamnaam
+    const teamMap = {};
+    teams.forEach(team => {
+      teamMap[team.teamId] = team.name;
+    });
 
-    const matchesDiv = document.createElement("div");
-    matchesDiv.classList.add("matches");
+    // Spelers per team
+    const playersByTeam = {};
+    players.forEach(player => {
+      if (!playersByTeam[player.teamId]) playersByTeam[player.teamId] = [];
+      playersByTeam[player.teamId].push(player);
+    });
 
-    card.innerHTML = `<strong>${team.name}</strong>`;
+    // Matches per team (gespeeld vs komend)
+    const matchesByTeam = {};
+    teams.forEach(team => {
+      matchesByTeam[team.teamId] = { played: [], upcoming: [] };
+    });
 
-    card.addEventListener("click", () => {
-      const isOpen = playersDiv.style.display === "block";
+    const today = new Date();
+    matches.forEach(match => {
+      const matchDate = new Date(match.matchDate);
+      const isPast = matchDate <= today;
 
-      playersDiv.style.display = isOpen ? "none" : "block";
-      matchesDiv.style.display = isOpen ? "none" : "block";
-
-      if (!isOpen) {
-
-        // PLAYERS
-        playersDiv.innerHTML = '<div class="section-title">Spelers:</div>';
-        players[team.id].forEach(player => {
-          const p = document.createElement("div");
-          p.classList.add("player");
-          p.textContent = player.name;
-          playersDiv.appendChild(p);
-        });
-
-        // MATCHES
-        matchesDiv.innerHTML = '<div class="section-title">Gespeelde wedstrijden:</div>';
-        matches[team.id].played.forEach(m => {
-          const el = document.createElement("div");
-          el.classList.add("match", "played");
-          el.textContent = `${team.name} vs ${m.vs} (${m.score})`;
-          matchesDiv.appendChild(el);
-        });
-
-        const upcomingTitle = document.createElement("div");
-        upcomingTitle.classList.add("section-title");
-        upcomingTitle.textContent = "Komende wedstrijden:";
-        matchesDiv.appendChild(upcomingTitle);
-
-        matches[team.id].upcoming.forEach(m => {
-          const el = document.createElement("div");
-          el.classList.add("match", "upcoming");
-          el.textContent = `${team.name} vs ${m.vs} (${m.date})`;
-          matchesDiv.appendChild(el);
-        });
+      if (matchesByTeam[match.homeTeamId]) {
+        isPast
+          ? matchesByTeam[match.homeTeamId].played.push(match)
+          : matchesByTeam[match.homeTeamId].upcoming.push(match);
+      }
+      if (matchesByTeam[match.awayTeamId]) {
+        isPast
+          ? matchesByTeam[match.awayTeamId].played.push(match)
+          : matchesByTeam[match.awayTeamId].upcoming.push(match);
       }
     });
 
-    card.appendChild(playersDiv);
-    card.appendChild(matchesDiv);
+    // Render teams
+    container.innerHTML = "";
+    teams.forEach(team => {
+      const card = document.createElement("div");
+      card.classList.add("card");
 
-    container.appendChild(card);
+      const playersDiv = document.createElement("div");
+      playersDiv.classList.add("players");
+      playersDiv.style.display = "none";
+
+      const matchesDiv = document.createElement("div");
+      matchesDiv.classList.add("matches");
+      matchesDiv.style.display = "none";
+
+      card.innerHTML = `<strong>${team.name}</strong>`;
+
+      card.addEventListener("click", () => {
+        const isOpen = playersDiv.style.display === "block";
+        playersDiv.style.display = isOpen ? "none" : "block";
+        matchesDiv.style.display = isOpen ? "none" : "block";
+
+        if (!isOpen) {
+
+          // SPELERS
+          playersDiv.innerHTML = '<div class="section-title">Spelers:</div>';
+          const teamPlayers = playersByTeam[team.teamId] || [];
+          if (teamPlayers.length === 0) {
+            playersDiv.innerHTML += '<div class="player">Geen spelers gevonden</div>';
+          } else {
+            teamPlayers.forEach(player => {
+              const p = document.createElement("div");
+              p.classList.add("player");
+              p.textContent = player.name;
+              playersDiv.appendChild(p);
+            });
+          }
+
+          // GESPEELDE WEDSTRIJDEN
+          matchesDiv.innerHTML = '<div class="section-title">Gespeelde wedstrijden:</div>';
+          const played = matchesByTeam[team.teamId]?.played || [];
+          if (played.length === 0) {
+            matchesDiv.innerHTML += '<div class="match played">Geen gespeelde wedstrijden</div>';
+          } else {
+            played.forEach(m => {
+              const el = document.createElement("div");
+              el.classList.add("match", "played");
+              el.textContent = `${teamMap[m.homeTeamId]} vs ${teamMap[m.awayTeamId]} (${m.homeScore} - ${m.awayScore})`;
+              matchesDiv.appendChild(el);
+            });
+          }
+
+          // KOMENDE WEDSTRIJDEN
+          const upcomingTitle = document.createElement("div");
+          upcomingTitle.classList.add("section-title");
+          upcomingTitle.textContent = "Komende wedstrijden:";
+          matchesDiv.appendChild(upcomingTitle);
+
+          const upcoming = matchesByTeam[team.teamId]?.upcoming || [];
+          if (upcoming.length === 0) {
+            const el = document.createElement("div");
+            el.classList.add("match", "upcoming");
+            el.textContent = "Geen komende wedstrijden";
+            matchesDiv.appendChild(el);
+          } else {
+            upcoming.forEach(m => {
+              const el = document.createElement("div");
+              el.classList.add("match", "upcoming");
+              el.textContent = `${teamMap[m.homeTeamId]} vs ${teamMap[m.awayTeamId]} (${m.matchDate})`;
+              matchesDiv.appendChild(el);
+            });
+          }
+        }
+      });
+
+      card.appendChild(playersDiv);
+      card.appendChild(matchesDiv);
+      container.appendChild(card);
+    });
+  })
+  .catch(error => {
+    console.error("Fout bij ophalen data:", error);
+    container.innerHTML = "<p>Kon data niet laden.</p>";
   });
-}
+});
 </script>
 
 </body>

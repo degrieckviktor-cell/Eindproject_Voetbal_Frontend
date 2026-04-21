@@ -4,71 +4,61 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Matches</title>
-
-  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
-
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
-
 <body>
-
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="logo">Football<span>Intel</span></div>
-
   <div class="nav-links">
     <a href="index.html">Home</a>
     <a href="matches.html" class="active">Matches</a>
     <a href="Standings.html">Standings</a>
     <a href="Teams.html">Teams</a>
   </div>
-
   <button class="cta">Explore</button>
 </nav>
-
 <!-- HERO / HEADER -->
 <section class="hero">
   <h1>Match <span>History</span></h1>
 </section>
-
 <!-- CONTENT -->
 <main class="container">
-
   <div id="matches-list"></div>
-
 </main>
-
 <!-- SCRIPT -->
+<script src="script.js"></script>
 <script>
-  const matches = [
-    { team1: "Team A", team2: "Team B", score: "2 - 1", date: "2026-04-01" },
-    { team1: "Team C", team2: "Team D", score: "0 - 0", date: "2026-03-30" },
-    { team1: "Team E", team2: "Team F", score: "3 - 2", date: "2026-03-28" }
-  ];
+  document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("matches-list");
 
-  const container = document.getElementById("matches-list");
+    Promise.all([
+      fetch("http://localhost:5153/api/match").then(r => r.json()),
+      fetch("http://localhost:5153/api/Team").then(r => r.json())
+    ])
+    .then(([matches, teams]) => {
+      const teamMap = {};
+      teams.forEach(team => {
+        teamMap[team.teamId] = team.name;
+      });
 
-  function renderMatches() {
-    container.innerHTML = "";
-
-    matches.forEach(match => {
-      const div = document.createElement("div");
-      div.classList.add("match");
-
-      div.innerHTML = `
-        <div class="teams">${match.team1} vs ${match.team2}</div>
-        <div class="score">Score: ${match.score}</div>
-        <div class="date">Datum: ${match.date}</div>
-      `;
-
-      container.appendChild(div);
+      matches.forEach(match => {
+        const div = document.createElement("div");
+        div.classList.add("match");
+        div.innerHTML = `
+          <div class="teams">${teamMap[match.homeTeamId] ?? "Team " + match.homeTeamId} vs ${teamMap[match.awayTeamId] ?? "Team " + match.awayTeamId}</div>
+          <div class="score">Score: ${match.homeScore} - ${match.awayScore}</div>
+          <div class="date">Datum: ${match.matchDate}</div>
+        `;
+        container.appendChild(div);
+      });
+    })
+    .catch(error => {
+      console.error("Fout bij ophalen data:", error);
+      container.innerHTML = "<p>Kon data niet laden.</p>";
     });
-  }
-
-  renderMatches();
+  });
 </script>
-
 </body>
 </html>
