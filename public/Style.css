@@ -326,3 +326,48 @@ h1, h2 {
         transform: translateY(0);
     }
 }
+/* =======================
+   ABOUT US (TEAM MEMBERS)
+======================= */
+
+.team-member {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+
+    padding: 20px;
+    margin-bottom: 20px;
+
+    transition: 0.3s;
+}
+
+.team-member:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 12px rgba(216,90,48,0.3);
+}
+
+/* FOTO */
+.team-member img {
+    width: 120px;
+    height: 120px;
+
+    object-fit: cover;
+
+    border-radius: 12px;
+
+    border: 2px solid rgba(216,90,48,0.4);
+}
+
+/* TEKST */
+.team-member h2 {
+    margin: 0;
+}
+
+.team-member p {
+    margin: 4px 0;
+    color: var(--text-muted);
+}
