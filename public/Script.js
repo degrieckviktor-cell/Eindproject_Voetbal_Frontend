@@ -1,47 +1,118 @@
-// ================================
-// MATCHES
-// ================================
-
-// GET: haal alle matches op
+// GET: haal alle matches op en toon ze op de pagina
 document.addEventListener("DOMContentLoaded", () => {
-    fetch("http://localhost:5153/api/match")
-        .then(response => response.json())
-        .then(data => {
-            console.log("Matches:", data);
+    const container = document.getElementById("matches-list");  // Zoek het HTML-element waar de matches in komen
+
+    if (!container) return;                                      // Stop als het element niet bestaat op deze pagina
+
+    Promise.all([                                                // Wacht tot beide requests klaar zijn
+        fetch("http://localhost:5153/api/match").then(r => r.json()),   // Haal alle matches op
+        fetch("http://localhost:5153/api/Team").then(r => r.json())     // Haal alle teams op voor de teamnamen
+    ])
+    .then(([matches, teams]) => {
+        const teamMap = {};                                      // Maak een leeg object aan om teams op te slaan
+        teams.forEach(team => {
+            teamMap[team.teamId] = team.name;                    // Sla elke teamnaam op met het teamId als sleutel
         });
+
+        matches.forEach(match => {
+            const div = document.createElement("div");          // Maak een nieuw div element aan voor elke match
+            div.classList.add("match");                          // Voeg de CSS klasse "match" toe aan de div
+            div.innerHTML = `
+            <div class="teams">${teamMap[match.homeTeamId] ?? "Team " + match.homeTeamId} vs ${teamMap[match.awayTeamId] ?? "Team " + match.awayTeamId}</div>
+            <div class="score">Score: ${match.homeScore} - ${match.awayScore}</div>
+            <div class="date">Datum: ${match.matchDate}</div>
+            `;                                                  // Vul de div met de match data
+            container.appendChild(div);                          // Voeg de div toe aan de pagina
+        });
+    })
+    .catch(error => {
+        console.error("Fout bij ophalen data:", error);          // Toon fout in console als er iets misgaat
+        if (container) container.innerHTML = "<p>Kon data niet laden.</p>"; // Toon foutmelding op de pagina
+    });
 });
 
-// POST: voeg een nieuwe match toe - wordt aangeroepen via de knop in de HTML
+// POPUP: open de popup en laad de teams in de dropdowns
 function addMatch() {
-    fetch("http://localhost:5153/api/match", {                  // Stuur POST-request naar de match endpoint
+    fetch("http://localhost:5153/api/Team")                      // Haal alle teams op voor de dropdown menus
+        .then(r => r.json())
+        .then(teams => {
+            const homeSelect = document.getElementById("popup-home");   // Zoek de thuisteam dropdown
+            const awaySelect = document.getElementById("popup-away");   // Zoek de uitteam dropdown
+
+            homeSelect.innerHTML = "";                           // Leeg de dropdown voor het geval hij al gevuld was
+            awaySelect.innerHTML = "";                           // Leeg de dropdown voor het geval hij al gevuld was
+
+            teams.forEach(team => {
+                const option1 = document.createElement("option");       // Maak een optie aan voor de thuisteam dropdown
+                option1.value = team.teamId;                     // Sla het teamId op als waarde
+                option1.textContent = team.name;                 // Toon de teamnaam in de dropdown
+                homeSelect.appendChild(option1);                 // Voeg de optie toe aan de thuisteam dropdown
+
+                const option2 = document.createElement("option");       // Maak een optie aan voor de uitteam dropdown
+                option2.value = team.teamId;                     // Sla het teamId op als waarde
+                option2.textContent = team.name;                 // Toon de teamnaam in de dropdown
+                awaySelect.appendChild(option2);                 // Voeg de optie toe aan de uitteam dropdown
+            });
+
+            document.getElementById("match-popup").style.display = "flex"; // Toon de popup
+        });
+}
+
+// POPUP: sluit de popup
+function closePopup() {
+    document.getElementById("match-popup").style.display = "none";  // Verberg de popup
+}
+
+// POST: verstuur de ingevulde match data naar de backend
+function submitMatch() {
+    const matchDate = document.getElementById("popup-date").value;          // Haal de ingevulde datum op
+    const homeTeamId = parseInt(document.getElementById("popup-home").value); // Haal het gekozen thuisteam ID op
+    const awayTeamId = parseInt(document.getElementById("popup-away").value); // Haal het gekozen uitteam ID op
+    const homeScore = parseInt(document.getElementById("popup-home-score").value); // Haal de score van het thuisteam op
+    const awayScore = parseInt(document.getElementById("popup-away-score").value); // Haal de score van het uitteam op
+
+    if (!matchDate) {                                            // Controleer of een datum ingevuld is
+        alert("Vul een datum in.");                              // Toon een foutmelding als de datum ontbreekt
+        return;                                                  // Stop de functie
+    }
+
+    if (homeTeamId === awayTeamId) {                             // Controleer of het thuis- en uitteam verschillend zijn
+        alert("Thuisteam en uitteam mogen niet hetzelfde zijn.");// Toon een foutmelding als ze hetzelfde zijn
+        return;                                                  // Stop de functie
+    }
+
+    fetch("http://localhost:5153/api/match", {                   // Stuur POST-request naar de match endpoint
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({                                  // Stuur de nieuwe match data mee
-            matchDate: "2025-06-01",                            // Datum van de match
-            homeTeamId: 1,                                      // ID van het thuisteam
-            awayTeamId: 2,                                      // ID van het uitteam
-            homeScore: 0,                                       // Score thuisteam
-            awayScore: 0                                        // Score uitteam
+        body: JSON.stringify({                                   // Zet de ingevulde data om naar JSON
+            matchDate: matchDate,                                // Datum van de match
+            homeTeamId: homeTeamId,                              // ID van het thuisteam
+            awayTeamId: awayTeamId,                              // ID van het uitteam
+            homeScore: homeScore,                                // Score van het thuisteam
+            awayScore: awayScore                                 // Score van het uitteam
         })
     })
         .then(response => response.json())
         .then(data => {
-            console.log("Nieuwe match aangemaakt:", data);      // Toon de aangemaakte match in de console
+            console.log("Nieuwe match aangemaakt:", data);       // Toon de aangemaakte match in de console
+            closePopup();                                        // Sluit de popup na het toevoegen
+            location.reload();                                   // Herlaad de pagina zodat de nieuwe match zichtbaar is
         });
 }
 
 // DELETE: verwijder de eerste match - wordt aangeroepen via de knop in de HTML
 function deleteMatch() {
-    fetch("http://localhost:5153/api/match")                    // Haal eerst alle matches op om een geldig ID te vinden
+    fetch("http://localhost:5153/api/match")                     // Haal eerst alle matches op om een geldig ID te vinden
         .then(response => response.json())
         .then(matches => {
-            const id = matches[0].matchId;                      // Pak het ID van de eerste match
-            fetch(`http://localhost:5153/api/match/${id}`, {    // Stuur DELETE-request met het ID in de URL
+            const id = matches[0].matchId;                       // Pak het ID van de eerste match
+            fetch(`http://localhost:5153/api/match/${id}`, {     // Stuur DELETE-request met het ID in de URL
                 method: "DELETE"
             })
                 .then(response => {
-                    if (response.ok) {                          // Controleer of het verwijderen gelukt is
+                    if (response.ok) {                           // Controleer of het verwijderen gelukt is
                         console.log("Match verwijderd met MatchId:", id);
+                        location.reload();                       // Herlaad de pagina zodat de verwijderde match verdwijnt
                     }
                 });
         });
@@ -49,15 +120,15 @@ function deleteMatch() {
 
 // PUT: pas een bestaande match aan
 function updateMatch() {
-    fetch("http://localhost:5153/api/match")                    // Haal eerst alle matches op om een geldig ID te vinden
+    fetch("http://localhost:5153/api/match")                     // Haal eerst alle matches op om een geldig ID te vinden
         .then(response => response.json())
         .then(matches => {
-            const id = matches[0].matchId;                      // Pak het ID van de eerste match
-            fetch(`http://localhost:5153/api/match/${id}`, {    // Stuur PUT-request met het ID in de URL
+            const id = matches[0].matchId;                       // Pak het ID van de eerste match
+            fetch(`http://localhost:5153/api/match/${id}`, {     // Stuur PUT-request met het ID in de URL
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({                          // Stuur de aangepaste match data mee
-                    matchId: id,                                // ID moet meegegeven worden bij PUT
+                body: JSON.stringify({                           // Stuur de aangepaste match data mee
+                    matchId: id,                                 // ID moet meegegeven worden bij PUT
                     matchDate: "2025-06-05",
                     homeTeamId: 1,
                     awayTeamId: 3,
@@ -68,6 +139,7 @@ function updateMatch() {
                 .then(response => response.json())
                 .then(data => {
                     console.log("Match aangepast:", data);
+                    location.reload();                           // Herlaad de pagina zodat de aanpassing zichtbaar is
                 });
         });
 }
@@ -76,7 +148,6 @@ function updateMatch() {
 // DIVISIONS
 // ================================
 
-// GET: haal alle divisies op
 document.addEventListener("DOMContentLoaded", () => {
     fetch("http://localhost:5153/api/Divisions")
         .then(response => response.json())
@@ -141,7 +212,6 @@ function updateDivision() {
 // PLAYERS
 // ================================
 
-// GET: haal alle spelers op
 document.addEventListener("DOMContentLoaded", () => {
     fetch("http://localhost:5153/api/Player")
         .then(response => response.json())
@@ -208,7 +278,6 @@ function updatePlayer() {
 // REGIONS
 // ================================
 
-// GET: haal alle regio's op
 document.addEventListener("DOMContentLoaded", () => {
     fetch("http://localhost:5153/api/Region")
         .then(response => response.json())
@@ -271,7 +340,6 @@ function updateRegion() {
 // TEAMS
 // ================================
 
-// GET: haal alle teams op
 document.addEventListener("DOMContentLoaded", () => {
     fetch("http://localhost:5153/api/Team")
         .then(response => response.json())

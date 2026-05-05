@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
+
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="logo">Football<span>Intel</span></div>
@@ -20,22 +21,55 @@
 
   <a href="about_us.html" class="cta">About Us</a>
 </nav>
+
 <!-- HERO / HEADER -->
 <section class="hero">
   <h1>Match <span>History</span></h1>
 </section>
+
 <!-- CONTENT -->
 <main class="container">
   <div id="matches-list"></div>
+
   <div style="margin-bottom: 20px;">
-  <button class="btn-primary" onclick="addMatch()">+ Match toevoegen</button>
-</div>
-<div style="margin-bottom: 20px;">
-  <button class="btn-primary" onclick="deleteMatch()">- Match verwijderen</button>
-</div>
+    <button class="btn-primary" onclick="addMatch()">+ Match toevoegen</button>
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <button class="btn-primary" onclick="deleteMatch()">- Match verwijderen</button>
+  </div>
 </main>
+
+<!-- POPUP voor match toevoegen -->
+<div id="match-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999; justify-content:center; align-items:center;">
+  <div style="background:#1a1a2e; padding:40px; border-radius:12px; width:400px; color:white;">
+    <h2 style="margin-bottom:20px;">Match toevoegen</h2>
+
+    <label>Datum</label>
+    <input type="date" id="popup-date" style="width:100%; padding:8px; margin-bottom:15px; border-radius:6px; border:none;"><br>
+
+    <label>Thuisteam</label>
+    <select id="popup-home" style="width:100%; padding:8px; margin-bottom:15px; border-radius:6px; border:none;"></select>
+
+    <label>Uitteam</label>
+    <select id="popup-away" style="width:100%; padding:8px; margin-bottom:15px; border-radius:6px; border:none;"></select>
+
+    <label>Score thuisteam</label>
+    <input type="number" id="popup-home-score" value="0" min="0" style="width:100%; padding:8px; margin-bottom:15px; border-radius:6px; border:none;">
+
+    <label>Score uitteam</label>
+    <input type="number" id="popup-away-score" value="0" min="0" style="width:100%; padding:8px; margin-bottom:30px; border-radius:6px; border:none;">
+
+    <div style="display:flex; gap:10px;">
+      <button class="btn-primary" onclick="submitMatch()">Toevoegen</button>
+      <button class="btn-primary" onclick="closePopup()" style="background:#555;">Annuleren</button>
+    </div>
+  </div>
+</div>
+
 <!-- SCRIPT -->
 <script src="script.js"></script>
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("matches-list");
@@ -67,5 +101,6 @@
     });
   });
 </script>
+
 </body>
 </html>
