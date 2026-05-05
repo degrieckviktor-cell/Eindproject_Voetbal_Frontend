@@ -4,10 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Matches</title>
-  <link rel="stylesheet" href="style.css">
+  <link id="theme-stylesheet" rel="stylesheet" href="Style.css">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    #theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      z-index: 9999;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+      transition: transform 0.2s ease;
+    }
+    #theme-toggle:hover {
+      transform: scale(1.2);
+    }
+  </style>
 </head>
 <body>
+
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="logo">Football<span>Intel</span></div>
@@ -17,25 +36,50 @@
     <a href="Standings.html">Standings</a>
     <a href="Teams.html">Teams</a>
   </div>
-
   <a href="about_us.html" class="cta">About Us</a>
 </nav>
-<!-- HERO / HEADER -->
+
+<!-- HERO -->
 <section class="hero">
   <h1>Match <span>History</span></h1>
 </section>
+
 <!-- CONTENT -->
 <main class="container">
   <div id="matches-list"></div>
   <div style="margin-bottom: 20px;">
-  <button class="btn-primary" onclick="addMatch()">+ Match toevoegen</button>
-</div>
-<div style="margin-bottom: 20px;">
-  <button class="btn-primary" onclick="deleteMatch()">- Match verwijderen</button>
-</div>
+    <button class="btn-primary" onclick="addMatch()">+ Match toevoegen</button>
+  </div>
+  <div style="margin-bottom: 20px;">
+    <button class="btn-primary" onclick="deleteMatch()">- Match verwijderen</button>
+  </div>
 </main>
-<!-- SCRIPT -->
+
+<!-- DARK MODE TOGGLE -->
+<button id="theme-toggle" title="Toggle dark mode">☀️</button>
+
 <script src="script.js"></script>
+
+<script>
+  // --- Dark mode toggle ---
+  const lightCSS = 'light-mode.css';
+  const darkCSS  = 'dark-mode.css';
+  const link   = document.getElementById('theme-stylesheet');
+  const button = document.getElementById('theme-toggle');
+
+  button.addEventListener('click', () => {
+    const isDark = link.getAttribute('href') === darkCSS;
+    link.setAttribute('href', isDark ? lightCSS : darkCSS);
+    button.textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  });
+
+  if (localStorage.getItem('theme') === 'dark') {
+    link.setAttribute('href', darkCSS);
+    button.textContent = '🌙';
+  }
+</script>
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("matches-list");
@@ -67,5 +111,6 @@
     });
   });
 </script>
+
 </body>
 </html>

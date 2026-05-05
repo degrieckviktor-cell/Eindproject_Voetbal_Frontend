@@ -5,11 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About Us</title>
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="style.css">
-
-  <!-- Fonts -->
+  <link id="theme-stylesheet" rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    #theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      z-index: 9999;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+      transition: transform 0.2s ease;
+    }
+    #theme-toggle:hover {
+      transform: scale(1.2);
+    }
+  </style>
 </head>
 
 <body>
@@ -17,14 +32,12 @@
 <!-- NAVBAR -->
 <nav class="navbar">
   <div class="logo">Football<span>Intel</span></div>
-
   <div class="nav-links">
     <a href="index.html">Home</a>
     <a href="matches.html">Matches</a>
     <a href="Standings.html">Standings</a>
     <a href="Teams.html">Teams</a>
   </div>
-
   <a href="about_us.html" class="cta">About Us</a>
 </nav>
 
@@ -38,7 +51,7 @@
 
   <!-- Viktor -->
   <div class="team-member">
-  <img src="imgly_6118627875691739303.jpg" alt="Viktor Degrieck">
+    <img src="imgly_6118627875691739303.jpg" alt="Viktor Degrieck">
     <div>
       <h2>Viktor Degrieck</h2>
       <p>17 jaar</p>
@@ -59,6 +72,29 @@
   </div>
 
 </main>
+
+<!-- DARK MODE TOGGLE -->
+<button id="theme-toggle" title="Toggle dark mode">☀️</button>
+
+<script>
+  const lightCSS = 'light-mode.css';
+  const darkCSS  = 'styledark.css';
+
+  const link   = document.getElementById('theme-stylesheet');
+  const button = document.getElementById('theme-toggle');
+
+  button.addEventListener('click', () => {
+    const isDark = link.getAttribute('href') === darkCSS;
+    link.setAttribute('href', isDark ? lightCSS : darkCSS);
+    button.textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  });
+
+  if (localStorage.getItem('theme') === 'dark') {
+    link.setAttribute('href', darkCSS);
+    button.textContent = '🌙';
+  }
+</script>
 
 </body>
 </html>

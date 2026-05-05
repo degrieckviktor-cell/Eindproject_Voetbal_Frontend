@@ -1,0 +1,440 @@
+/* =======================
+   VARIABLES (THEME)
+======================= */
+:root {
+   
+
+/* 🌞 LIGHT MODE */
+.light-mode {
+    --bg-dark: #F8FAFC;
+    --bg-card: #FFFFFF;
+
+    --accent: #FF6A2B;
+    --accent-light: #FFB347;
+
+    --text-main: #0F172A;
+    --text-muted: #475569;
+}
+}
+
+
+/* =======================
+   GLOBAL
+======================= */
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+
+    background: linear-gradient(135deg, var(--bg-dark), var(--bg-card));
+    color: var(--text-main);
+}
+
+/* TITLES */
+h1, h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: 0.05em;
+}
+
+/* =======================
+   NAVBAR
+======================= */
+.navbar {
+    position: sticky;
+    top: 0;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 15px 40px;
+
+    background: rgba(26,16,8,0.65);
+    backdrop-filter: blur(12px);
+
+    border-bottom: 1px solid rgba(216,90,48,0.2);
+    .navbar .cta {
+    margin-left: 10px;
+}
+}
+
+.logo span {
+    color: var(--accent);
+}
+
+.nav-links a {
+    margin: 0 12px;
+    text-decoration: none;
+
+    color: var(--text-main);
+
+    position: relative;
+}
+
+/* ACTIVE LINK */
+.nav-links a.active::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+
+    width: 100%;
+    height: 2px;
+
+    background: var(--accent);
+}
+
+/* CTA BUTTON */
+.cta {
+    background: var(--accent-light);
+    color: var(--bg-dark);
+
+    border: none;
+    border-radius: 3px;
+
+    padding: 8px 14px;
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.cta:hover {
+    transform: translateY(-2px);
+}
+
+/* =======================
+   HERO
+======================= */
+.hero {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.hero span {
+    color: var(--accent-light);
+}
+
+/* =======================
+   CONTAINER (FIX)
+======================= */
+.container {
+    padding: 40px;
+}
+
+/* =======================
+   CARDS
+======================= */
+.card {
+    background: var(--bg-card);
+
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+
+    padding: 20px;
+
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(216,90,48,0.3);
+}
+
+/* =======================
+   MATCHES
+======================= */
+.match {
+    background: var(--bg-card);
+
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+
+    padding: 15px;
+    margin-bottom: 15px;
+
+    transition: 0.3s;
+}
+
+.match:hover {
+    transform: translateY(-2px);
+}
+
+/* =======================
+   BUTTONS
+======================= */
+.btn-primary {
+    background: var(--accent);
+    color: var(--bg-dark);
+
+    border: none;
+    border-radius: 3px;
+
+    padding: 10px 18px;
+
+    cursor: pointer;
+}
+
+.btn-ghost {
+    background: transparent;
+    border: 1px solid var(--accent);
+
+    color: var(--text-main);
+
+    padding: 10px 18px;
+
+    cursor: pointer;
+}
+
+/* HOVER */
+.btn-primary:hover,
+.btn-ghost:hover {
+    transform: translateY(-2px);
+}
+
+/* =======================
+   TABLE (FIXED + FULL WIDTH)
+======================= */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+
+    background: var(--bg-card);
+
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* HEADER */
+.table th {
+    background: var(--bg-dark);
+    color: var(--accent-light);
+
+    padding: 14px;
+    font-weight: 600;
+}
+
+/* CELLS */
+.table td {
+    padding: 12px;
+    text-align: center;
+
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+
+    color: var(--text-main);
+}
+
+/* HOVER */
+.table tr:hover {
+    background: rgba(216,90,48,0.08);
+}
+
+/* TEAM COLUMN */
+.team {
+    text-align: left;
+    font-weight: bold;
+}
+
+/* TOP TEAM */
+.table tbody tr:first-child {
+    background: rgba(239,159,39,0.15);
+}
+
+/* =======================
+   EXTRA POLISH
+======================= */
+
+/* Subtle glow when hovering table */
+.table tr {
+    transition: 0.2s;
+}
+/* =======================
+   RANKING COLORS
+======================= */
+
+/* 1ST PLACE (GOLD) */
+.table tbody tr:first-child {
+    background: rgba(239, 159, 39, 0.18);
+}
+
+/* 2ND + 3RD PLACE (DARK GREEN) */
+.table tbody tr:nth-child(2),
+.table tbody tr:nth-child(3) {
+    background: rgba(40, 90, 50, 0.35);
+}
+
+/* 4TH + 5TH PLACE (DARK RED) */
+.table tbody tr:nth-child(4),
+.table tbody tr:nth-child(5) {
+    background: rgba(90, 30, 30, 0.35);
+}
+
+/* OPTIONAL: subtle hover enhancement per kleur */
+.table tbody tr:nth-child(-n+3):hover {
+    background: rgba(239, 159, 39, 0.25);
+}
+
+.table tbody tr:nth-child(4),
+.table tbody tr:nth-child(5):hover {
+    background: rgba(120, 40, 40, 0.45);
+}
+/* =======================
+   TEAM PAGE SPECIFICS
+======================= */
+
+.players,
+.matches {
+    margin-top: 10px;
+    padding-left: 10px;
+    display: none;
+}
+
+/* TITLES */
+.section-title {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 13px;
+
+    color: var(--accent-light);
+}
+
+/* PLAYER TEXT */
+.player {
+    font-size: 14px;
+    padding: 3px 0;
+    color: var(--text-muted);
+}
+
+/* MATCH ITEMS */
+.match {
+    font-size: 14px;
+    padding: 4px 0;
+}
+
+/* PLAYED MATCH */
+.played {
+    color: var(--accent-light);
+}
+
+/* UPCOMING MATCH */
+.upcoming {
+    color: var(--accent);
+}
+
+/* OPEN ANIMATION */
+.players,
+.matches {
+    animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* =======================
+   ABOUT US (TEAM MEMBERS)
+======================= */
+
+.team-member {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+
+    padding: 20px;
+    margin-bottom: 20px;
+
+    transition: 0.3s;
+}
+
+.team-member:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 12px rgba(216,90,48,0.3);
+}
+
+/* FOTO */
+.team-member img {
+    width: 120px;
+    height: 120px;
+
+    object-fit: cover;
+
+    border-radius: 12px;
+
+    border: 2px solid rgba(216,90,48,0.4);
+}
+
+/* TEKST */
+.team-member h2 {
+    margin: 0;
+}
+
+.team-member p {
+    margin: 4px 0;
+    color: var(--text-muted);
+}
+/* =======================
+   GLOBAL IMPROVEMENTS
+======================= */
+
+body {
+    transition: background 0.3s, color 0.3s;
+}
+
+/* CARDS / MATCHES UPGRADE */
+.card,
+.match,
+.team-member {
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+
+    transition: 0.3s;
+}
+
+.card:hover,
+.match:hover,
+.team-member:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 15px rgba(255, 106, 43, 0.3);
+}
+
+/* BUTTON IMPROVEMENT */
+.cta {
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+/* NAVBAR IMPROVEMENT */
+.navbar {
+    transition: 0.3s;
+}
+
+/* HERO TEXT */
+.hero h1 {
+    font-size: 2.5rem;
+}
+
+/* TEAM MEMBER (ABOUT US) */
+.team-member {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.team-member img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+}

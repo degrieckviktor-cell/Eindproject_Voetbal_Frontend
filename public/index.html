@@ -7,7 +7,25 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css">
+    <link id="theme-stylesheet" rel="stylesheet" href="Style.css">
+
+    <style>
+      #theme-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        font-size: 1.8rem;
+        cursor: pointer;
+        z-index: 9999;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        transition: transform 0.2s ease;
+      }
+      #theme-toggle:hover {
+        transform: scale(1.2);
+      }
+    </style>
 </head>
 
 <body>
@@ -23,8 +41,7 @@
         <a href="Teams.html">Teams</a>
     </div>
 
-    <a href="about_us.html" class="cta">About Us</a>    
-</a>
+    <a href="about_us.html" class="cta">About Us</a>
 </nav>
 
 <!-- HERO -->
@@ -36,10 +53,35 @@
     <p>
         Een futuristisch platform waar data, strategie en inzicht samenkomen in een warme high-end interface.
     </p>
-
-   
 </section>
-</main>
+
+<!-- DARK MODE TOGGLE -->
+<button id="theme-toggle" title="Toggle dark mode">☀️</button>
+
 <script src="script.js"></script>
+
+<script>
+  const lightCSS = 'Style.css';
+  const darkCSS  = 'Styledark.css';
+
+  const link   = document.getElementById('theme-stylesheet');
+  const button = document.getElementById('theme-toggle');
+
+  function toggleTheme() {
+    const isDark = link.getAttribute('href') === darkCSS;
+    link.setAttribute('href', isDark ? lightCSS : darkCSS);
+    button.textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  }
+
+  button.addEventListener('click', toggleTheme);
+
+  // Remember preference on page load
+  if (localStorage.getItem('theme') === 'dark') {
+    link.setAttribute('href', darkCSS);
+    button.textContent = '🌙';
+  }
+</script>
+
 </body>
 </html>

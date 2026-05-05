@@ -4,8 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teams</title>
-  <link rel="stylesheet" href="style.css">
+  <link id="theme-stylesheet" rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    #theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      z-index: 9999;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+      transition: transform 0.2s ease;
+    }
+    #theme-toggle:hover {
+      transform: scale(1.2);
+    }
+  </style>
 </head>
 <body>
 
@@ -18,8 +36,7 @@
     <a href="Standings.html">Standings</a>
     <a href="Teams.html" class="active">Teams</a>
   </div>
-
-<a href="about_us.html" class="cta">About Us</a>
+  <a href="about_us.html" class="cta">About Us</a>
 </nav>
 
 <!-- HERO -->
@@ -32,22 +49,45 @@
 <main class="container">
   <div id="teams-list"></div>
   <div style="margin-bottom: 20px;">
-  <button class="btn-primary" onclick="addTea()">+ Team toevoegen</button>
-</div>
+    <button class="btn-primary" onclick="addTea()">+ Team toevoegen</button>
+  </div>
   <div style="margin-bottom: 20px;">
-  <button class="btn-primary" onclick="deleteTeam()">- Team verwijderen</button>
-</div>
-<div style="margin-bottom: 20px;">
-  <button class="btn-primary" onclick="addPlayer()">+ Player toevoegen</button>
-</div>
-<div style="margin-bottom: 20px;">
-  <button class="btn-primary" onclick="deletePlayer()">- Player verwijderen</button>
-</div>
-
-
+    <button class="btn-primary" onclick="deleteTeam()">- Team verwijderen</button>
+  </div>
+  <div style="margin-bottom: 20px;">
+    <button class="btn-primary" onclick="addPlayer()">+ Player toevoegen</button>
+  </div>
+  <div style="margin-bottom: 20px;">
+    <button class="btn-primary" onclick="deletePlayer()">- Player verwijderen</button>
+  </div>
 </main>
 
+<!-- DARK MODE TOGGLE -->
+<button id="theme-toggle" title="Toggle dark mode">☀️</button>
+
 <script src="script.js"></script>
+
+<script>
+  // --- Dark mode toggle ---
+  const lightCSS = 'style.css';
+  const darkCSS  = 'styledark.css';
+
+  const link   = document.getElementById('theme-stylesheet');
+  const button = document.getElementById('theme-toggle');
+
+  button.addEventListener('click', () => {
+    const isDark = link.getAttribute('href') === darkCSS;
+    link.setAttribute('href', isDark ? lightCSS : darkCSS);
+    button.textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  });
+
+  if (localStorage.getItem('theme') === 'dark') {
+    link.setAttribute('href', darkCSS);
+    button.textContent = '🌙';
+  }
+</script>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("teams-list");
@@ -59,20 +99,17 @@ document.addEventListener("DOMContentLoaded", () => {
   ])
   .then(([teams, players, matches]) => {
 
-    // teamId -> teamnaam
     const teamMap = {};
     teams.forEach(team => {
       teamMap[team.teamId] = team.name;
     });
 
-    // Spelers per team
     const playersByTeam = {};
     players.forEach(player => {
       if (!playersByTeam[player.teamId]) playersByTeam[player.teamId] = [];
       playersByTeam[player.teamId].push(player);
     });
 
-    // Matches per team (gespeeld vs komend)
     const matchesByTeam = {};
     teams.forEach(team => {
       matchesByTeam[team.teamId] = { played: [], upcoming: [] };
@@ -95,7 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Render teams
     container.innerHTML = "";
     teams.forEach(team => {
       const card = document.createElement("div");
@@ -118,7 +154,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!isOpen) {
 
-          // SPELERS
           playersDiv.innerHTML = '<div class="section-title">Spelers:</div>';
           const teamPlayers = playersByTeam[team.teamId] || [];
           if (teamPlayers.length === 0) {
@@ -132,7 +167,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
           }
 
-          // GESPEELDE WEDSTRIJDEN
           matchesDiv.innerHTML = '<div class="section-title">Gespeelde wedstrijden:</div>';
           const played = matchesByTeam[team.teamId]?.played || [];
           if (played.length === 0) {
@@ -146,7 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
           }
 
-          // KOMENDE WEDSTRIJDEN
           const upcomingTitle = document.createElement("div");
           upcomingTitle.classList.add("section-title");
           upcomingTitle.textContent = "Komende wedstrijden:";
