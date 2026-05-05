@@ -3,31 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matches | FootballIntel</title>
+
   <title>Matches</title>
   <link id="theme-stylesheet" rel="stylesheet" href="Style.css">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 
   <style>
-    #theme-toggle {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: none;
-      border: none;
-      font-size: 1.8rem;
+    /* === ALGEMENE STYLING & LAYOUT === */
+    body {
+      background-color: #120a05; /* Iets dieper donkerbruin voor contrast */
+      color: #FAF0E8;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* === MATCH KAART STYLING === */
+    .match {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(216, 90, 48, 0.2);
+      border-left: 5px solid #D85A30; /* Accentlijn links */
+      margin-bottom: 16px;
+      padding: 20px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .match:hover {
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+
+    /* De tekst-container die zorgt voor de "enters" */
+    .match-content {
+      display: flex;
+      flex-direction: column;
+      gap: 6px; /* Ruimte tussen de regels */
+    }
+
+    .match-teams {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .match-score {
+      font-size: 1rem;
+      color: #D85A30;
+      font-weight: 500;
+    }
+
+    .match-date {
+      font-size: 0.85rem;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* === ACTIE KNOPPEN === */
+    .match-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .match-actions button {
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(216, 90, 48, 0.1);
+      border: 1px solid rgba(216, 90, 48, 0.3);
+      color: #FAF0E8;
+      border-radius: 8px;
       cursor: pointer;
-      z-index: 9999;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-      transition: transform 0.2s ease;
+      transition: 0.2s;
+      font-size: 18px;
     }
-    #theme-toggle:hover {
-      transform: scale(1.2);
+
+    .match-actions button:hover {
+      background: #D85A30;
+      color: #1A1008;
+      box-shadow: 0 0 15px rgba(216, 90, 48, 0.4);
     }
+
+    .match-actions button.btn-delete:hover {
+      background: #EF9F27; /* Oranje-geel voor verwijderen */
+      border-color: #EF9F27;
+    }
+
+    /* === POPUPS (MODALS) === */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(5px);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #1c110a;
+      padding: 40px;
+      border-radius: 16px;
+      border: 1px solid #D85A30;
+      width: 100%;
+      max-width: 400px;
+      color: white;
+    }
+
+    .modal-content h2 { margin-top: 0; color: #D85A30; }
+    .modal-content input, .modal-content select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      background: #2a1a11;
+      border: 1px solid #444;
+      color: white;
+      border-radius: 6px;
+    }
+
+    .btn-save { background: #D85A30; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+    .btn-cancel { background: transparent; color: #999; border: none; cursor: pointer; margin-left: 10px; }
+
   </style>
 </head>
+
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar">
   <div class="logo">Football<span>Intel</span></div>
   <div class="nav-links">
@@ -39,77 +156,138 @@
   <a href="about_us.html" class="cta">About Us</a>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
   <h1>Match <span>History</span></h1>
 </section>
 
-<!-- CONTENT -->
 <main class="container">
   <div id="matches-list"></div>
-  <div style="margin-bottom: 20px;">
-    <button class="btn-primary" onclick="addMatch()">+ Match toevoegen</button>
-  </div>
-  <div style="margin-bottom: 20px;">
-    <button class="btn-primary" onclick="deleteMatch()">- Match verwijderen</button>
+
+  <div style="margin-top: 30px; text-align: center;">
+    <button class="btn-primary" onclick="addMatch()">+ Nieuwe Match Toevoegen</button>
   </div>
 </main>
 
-<!-- DARK MODE TOGGLE -->
-<button id="theme-toggle" title="Toggle dark mode">☀️</button>
+<div id="match-popup" class="modal-overlay">
+  <div class="modal-content">
+    <h2>Match toevoegen</h2>
+    <label>Datum</label>
+    <input type="date" id="popup-date">
+    <label>Thuis Team</label>
+    <select id="popup-home"></select>
+    <label>Uit Team</label>
+    <select id="popup-away"></select>
+    <label>Score Thuis</label>
+    <input type="number" id="popup-home-score" value="0">
+    <label>Score Uit</label>
+    <input type="number" id="popup-away-score" value="0">
+    
+    <div style="margin-top: 20px;">
+      <button class="btn-save" onclick="submitMatch()">Toevoegen</button>
+      <button class="btn-cancel" onclick="closePopup()">Annuleren</button>
+    </div>
+  </div>
+</div>
+
+<div id="edit-popup" class="modal-overlay">
+  <div class="modal-content">
+    <h2>Match bewerken</h2>
+    <label>Datum</label>
+    <input type="date" id="edit-date">
+    <label>Score Thuis</label>
+    <input type="number" id="edit-home-score">
+    <label>Score Uit</label>
+    <input type="number" id="edit-away-score">
+    
+    <div style="margin-top: 20px;">
+      <button class="btn-save" onclick="saveEdit()">Opslaan</button>
+      <button class="btn-cancel" onclick="closeEdit()">Annuleren</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let cachedMatches = [];
+const originalFetch = window.fetch;
+
+// API Intercept om data op te slaan voor gebruik in de UI
+window.fetch = function (...args) {
+  return originalFetch(...args).then(response => {
+    if (args[0].includes("/api/match")) {
+      response.clone().json().then(data => {
+        cachedMatches = data;
+      });
+    }
+    return response;
+  });
+};
+</script>
 
 <script src="script.js"></script>
 
 <script>
-  // --- Dark mode toggle ---
-  const lightCSS = 'light-mode.css';
-  const darkCSS  = 'dark-mode.css';
-  const link   = document.getElementById('theme-stylesheet');
-  const button = document.getElementById('theme-toggle');
+let currentId = null;
 
-  button.addEventListener('click', () => {
-    const isDark = link.getAttribute('href') === darkCSS;
-    link.setAttribute('href', isDark ? lightCSS : darkCSS);
-    button.textContent = isDark ? '☀️' : '🌙';
-    localStorage.setItem('theme', isDark ? 'light' : 'dark');
-  });
+// Deze functie herstructureert de matches nadat script.js ze heeft ingeladen
+document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(() => {
+    const listContainer = document.getElementById("matches-list");
+    const matchDivs = listContainer.querySelectorAll(".match");
 
-  if (localStorage.getItem('theme') === 'dark') {
-    link.setAttribute('href', darkCSS);
-    button.textContent = '🌙';
-  }
-</script>
+    matchDivs.forEach((div, index) => {
+      const match = cachedMatches[index];
+      if (!match) return;
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const container = document.getElementById("matches-list");
-
-    Promise.all([
-      fetch("http://localhost:5153/api/match").then(r => r.json()),
-      fetch("http://localhost:5153/api/Team").then(r => r.json())
-    ])
-    .then(([matches, teams]) => {
-      const teamMap = {};
-      teams.forEach(team => {
-        teamMap[team.teamId] = team.name;
-      });
-
-      matches.forEach(match => {
-        const div = document.createElement("div");
-        div.classList.add("match");
-        div.innerHTML = `
-          <div class="teams">${teamMap[match.homeTeamId] ?? "Team " + match.homeTeamId} vs ${teamMap[match.awayTeamId] ?? "Team " + match.awayTeamId}</div>
-          <div class="score">Score: ${match.homeScore} - ${match.awayScore}</div>
-          <div class="date">Datum: ${match.matchDate}</div>
-        `;
-        container.appendChild(div);
-      });
-    })
-    .catch(error => {
-      console.error("Fout bij ophalen data:", error);
-      container.innerHTML = "<p>Kon data niet laden.</p>";
+      // We overschrijven de rommelige tekst met een mooie structuur
+      div.innerHTML = `
+        <div class="match-content">
+          <div class="match-teams">${match.homeTeamName || 'Barcelona'} vs ${match.awayTeamName || 'Real Madrid'}</div>
+          <div class="match-score">Score: <strong>${match.homeScore} - ${match.awayScore}</strong></div>
+          <div class="match-date">📅 ${new Date(match.matchDate).toLocaleDateString('nl-NL')}</div>
+        </div>
+        <div class="match-actions">
+          <button class="btn-delete" onclick="deleteMatchById(${match.matchId})" title="Verwijderen">🗑️</button>
+          <button onclick="openEdit(${match.matchId})" title="Bewerken">✏️</button>
+        </div>
+      `;
     });
-  });
+  }, 500); // Wacht even tot script.js klaar is met renderen
+});
+
+function deleteMatchById(id) {
+  if (!confirm("Weet je zeker dat je deze match wilt verwijderen?")) return;
+  fetch(`http://localhost:5153/api/match/${id}`, { method: "DELETE" })
+    .then(() => location.reload());
+}
+
+function openEdit(id) {
+  currentId = id;
+  const match = cachedMatches.find(m => m.matchId === id);
+  document.getElementById("edit-date").value = match.matchDate.split("T")[0];
+  document.getElementById("edit-home-score").value = match.homeScore;
+  document.getElementById("edit-away-score").value = match.awayScore;
+  document.getElementById("edit-popup").style.display = "flex";
+}
+
+function saveEdit() {
+  const match = cachedMatches.find(m => m.matchId === currentId);
+  fetch(`http://localhost:5153/api/match/${currentId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      matchId: currentId,
+      matchDate: document.getElementById("edit-date").value,
+      homeTeamId: match.homeTeamId,
+      awayTeamId: match.awayTeamId,
+      homeScore: parseInt(document.getElementById("edit-home-score").value),
+      awayScore: parseInt(document.getElementById("edit-away-score").value)
+    })
+  }).then(() => location.reload());
+}
+
+function closeEdit() { document.getElementById("edit-popup").style.display = "none"; }
+function addMatch() { document.getElementById("match-popup").style.display = "flex"; }
+function closePopup() { document.getElementById("match-popup").style.display = "none"; }
 </script>
 
 </body>
