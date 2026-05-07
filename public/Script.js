@@ -399,3 +399,217 @@ function updateTeam() {
                 });
         });
 }
+// ================================
+// TEAMS TAB POPUPS
+// ================================
+
+// OPEN TEAM POPUP
+function openAddTeamPopup() {
+
+    fetch("http://localhost:5153/api/Divisions")
+        .then(r => r.json())
+        .then(divisions => {
+
+            const select = document.getElementById("team-division");
+
+            select.innerHTML = "";
+
+            divisions.forEach(division => {
+
+                const option = document.createElement("option");
+
+                option.value = division.divisionId;
+                option.textContent = division.name;
+
+                select.appendChild(option);
+            });
+
+            document.getElementById("team-popup").style.display = "flex";
+        });
+}
+
+// OPEN PLAYER POPUP
+function openAddPlayerPopup() {
+
+    fetch("http://localhost:5153/api/Team")
+        .then(r => r.json())
+        .then(teams => {
+
+            const select = document.getElementById("player-team");
+            select.innerHTML = "";
+
+            teams.forEach(team => {
+                const option = document.createElement("option");
+                option.value = team.teamId;
+                option.textContent = team.name;
+                select.appendChild(option);
+            });
+
+            document.getElementById("player-popup").style.display = "flex";
+        });
+}
+
+// OPEN DELETE TEAM POPUP
+function openDeleteTeamPopup() {
+
+    fetch("http://localhost:5153/api/Team")
+        .then(r => r.json())
+        .then(teams => {
+
+            const select = document.getElementById("delete-team-select");
+            select.innerHTML = "";
+
+            teams.forEach(team => {
+                const option = document.createElement("option");
+                option.value = team.teamId;
+                option.textContent = team.name;
+                select.appendChild(option);
+            });
+
+            document.getElementById("delete-team-popup").style.display = "flex";
+        });
+}
+
+// OPEN DELETE PLAYER POPUP
+function openDeletePlayerPopup() {
+
+    fetch("http://localhost:5153/api/Player")
+        .then(r => r.json())
+        .then(players => {
+
+            const select = document.getElementById("delete-player-select");
+            select.innerHTML = "";
+
+            players.forEach(player => {
+                const option = document.createElement("option");
+                option.value = player.playerId;
+                option.textContent = player.name;
+                select.appendChild(option);
+            });
+
+            document.getElementById("delete-player-popup").style.display = "flex";
+        });
+}
+
+// CLOSE POPUPS
+function closePopups() {
+
+    document.getElementById("team-popup").style.display = "none";
+    document.getElementById("player-popup").style.display = "none";
+    document.getElementById("delete-team-popup").style.display = "none";
+    document.getElementById("delete-player-popup").style.display = "none";
+}
+
+// SUBMIT TEAM
+function submitTeam() {
+
+    const name = document.getElementById("team-name").value;
+
+    const divisionId = parseInt(
+        document.getElementById("team-division").value
+    );
+
+    if (!name) {
+        alert("Geef een teamnaam in");
+        return;
+    }
+
+    if (!divisionId) {
+        alert("Kies een divisie");
+        return;
+    }
+
+    fetch("http://localhost:5153/api/Team", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+            name: name,
+            divisionId: divisionId
+
+        })
+    })
+
+    .then(response => {
+
+        if (!response.ok) {
+            throw new Error("Team kon niet opgeslagen worden");
+        }
+
+        return response.json();
+    })
+
+    .then(data => {
+
+        console.log("Team toegevoegd:", data);
+
+        location.reload();
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        alert("Opslaan mislukt");
+    });
+}
+
+// SUBMIT PLAYER
+function submitPlayer() {
+
+    const name = document.getElementById("player-name").value;
+    const age = parseInt(document.getElementById("player-age").value);
+    const teamId = parseInt(document.getElementById("player-team").value);
+
+    fetch("http://localhost:5153/api/Player", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: name,
+            age: age,
+            teamId: teamId
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        console.log(data);
+        location.reload();
+    });
+}
+
+// DELETE TEAM
+function submitDeleteTeam() {
+
+    const id = document.getElementById("delete-team-select").value;
+
+    fetch(`http://localhost:5153/api/Team/${id}`, {
+        method: "DELETE"
+    })
+    .then(response => {
+        if(response.ok){
+            location.reload();
+        }
+    });
+}
+
+// DELETE PLAYER
+function submitDeletePlayer() {
+
+    const id = document.getElementById("delete-player-select").value;
+
+    fetch(`http://localhost:5153/api/Player/${id}`, {
+        method: "DELETE"
+    })
+    .then(response => {
+        if(response.ok){
+            location.reload();
+        }
+    });
+}

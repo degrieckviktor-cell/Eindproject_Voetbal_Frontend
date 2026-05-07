@@ -46,21 +46,87 @@
 </section>
 
 <!-- CONTENT -->
+<!-- CONTENT -->
 <main class="container">
+
   <div id="teams-list"></div>
-  <div style="margin-bottom: 20px;">
-    <button class="btn-primary" onclick="addTea()">+ Team toevoegen</button>
+
+  <div style="margin-top: 30px; text-align: center;">
+
+    <div style="margin-bottom: 20px;">
+      <button class="btn-primary" onclick="openAddTeamPopup()">+ Team toevoegen</button>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <button class="btn-primary" onclick="openDeleteTeamPopup()">- Team verwijderen</button>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <button class="btn-primary" onclick="openAddPlayerPopup()">+ Player toevoegen</button>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <button class="btn-primary" onclick="openDeletePlayerPopup()">- Player verwijderen</button>
+    </div>
+
   </div>
-  <div style="margin-bottom: 20px;">
-    <button class="btn-primary" onclick="deleteTeam()">- Team verwijderen</button>
-  </div>
-  <div style="margin-bottom: 20px;">
-    <button class="btn-primary" onclick="addPlayer()">+ Player toevoegen</button>
-  </div>
-  <div style="margin-bottom: 20px;">
-    <button class="btn-primary" onclick="deletePlayer()">- Player verwijderen</button>
-  </div>
+
 </main>
+
+<style>
+.container{
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card{
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(216,90,48,0.2);
+  border-left: 5px solid #D85A30;
+  margin-bottom: 16px;
+  padding: 20px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.card:hover{
+  background: rgba(255,255,255,0.06);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.card strong{
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.2rem;
+  color: white;
+}
+
+.section-title{
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #D85A30;
+  font-weight: 600;
+}
+
+.player,
+.match{
+  padding: 10px;
+  margin-bottom: 8px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  color: #FAF0E8;
+}
+
+.match.played{
+  border-left: 4px solid #D85A30;
+}
+
+.match.upcoming{
+  border-left: 4px solid #EF9F27;
+}
+</style>
 
 <!-- DARK MODE TOGGLE -->
 <button id="theme-toggle" title="Toggle dark mode">☀️</button>
@@ -212,7 +278,94 @@ document.addEventListener("DOMContentLoaded", () => {
     container.innerHTML = "<p>Kon data niet laden.</p>";
   });
 });
-</script>
 
+</script>
+<!-- TEAM POPUP -->
+<div id="team-popup" class="popup">
+  <div class="popup-content">
+
+    <h2>Team toevoegen</h2>
+
+    <input type="text" id="team-name" placeholder="Team naam">
+
+    <select id="team-division">
+      <option value="">Kies divisie</option>
+    </select>
+
+    <button onclick="submitTeam()">Toevoegen</button>
+    <button onclick="closePopups()">Sluiten</button>
+
+  </div>
+</div>
+
+<!-- PLAYER POPUP -->
+<div id="player-popup" class="popup">
+  <div class="popup-content">
+    <h2>Player toevoegen</h2>
+
+    <input type="text" id="player-name" placeholder="Player naam">
+    <input type="number" id="player-age" placeholder="Leeftijd">
+
+    <select id="player-team"></select>
+
+    <button onclick="submitPlayer()">Toevoegen</button>
+    <button onclick="closePopups()">Sluiten</button>
+  </div>
+</div>
+
+<!-- DELETE TEAM POPUP -->
+<div id="delete-team-popup" class="popup">
+  <div class="popup-content">
+    <h2>Team verwijderen</h2>
+
+    <select id="delete-team-select"></select>
+
+    <button onclick="submitDeleteTeam()">Verwijderen</button>
+    <button onclick="closePopups()">Sluiten</button>
+  </div>
+</div>
+
+<!-- DELETE PLAYER POPUP -->
+<div id="delete-player-popup" class="popup">
+  <div class="popup-content">
+    <h2>Player verwijderen</h2>
+
+    <select id="delete-player-select"></select>
+
+    <button onclick="submitDeletePlayer()">Verwijderen</button>
+    <button onclick="closePopups()">Sluiten</button>
+  </div>
+</div>
+
+<style>
+.popup{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.popup-content{
+  background:white;
+  padding:30px;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+  min-width:300px;
+}
+
+.popup-content input,
+.popup-content select{
+  padding:10px;
+}
+
+</style>
 </body>
 </html>
