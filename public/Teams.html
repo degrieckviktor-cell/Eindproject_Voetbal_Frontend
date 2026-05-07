@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teams</title>
+  <title>Teams | FootballIntel</title>
   <link id="theme-stylesheet" rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
   <style>
+    /* ===== DARK MODE TOGGLE ===== */
     #theme-toggle {
       position: fixed;
       bottom: 20px;
@@ -20,9 +21,243 @@
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
       transition: transform 0.2s ease;
     }
-    #theme-toggle:hover {
-      transform: scale(1.2);
+    #theme-toggle:hover { transform: scale(1.2); }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
     }
+
+    /* ===== TEAM CARDS ===== */
+    .card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(216,90,48,0.2);
+      border-left: 5px solid #D85A30;
+      margin-bottom: 16px;
+      padding: 20px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .card:hover {
+      background: rgba(255,255,255,0.06);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+    .card strong {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem;
+      color: white;
+    }
+    .section-title {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      color: #D85A30;
+      font-weight: 600;
+    }
+    .player, .match {
+      padding: 10px;
+      margin-bottom: 8px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      color: #FAF0E8;
+    }
+    .match.played   { border-left: 4px solid #D85A30; }
+    .match.upcoming { border-left: 4px solid #EF9F27; }
+
+    /* ===== ACTION BAR (boven de lijst) ===== */
+    .action-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 28px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    /* ===== DROPDOWN WRAPPER ===== */
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: rgba(216,90,48,0.12);
+      border: 1px solid rgba(216,90,48,0.4);
+      border-radius: 10px;
+      color: #FAF0E8;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    .dropdown-trigger:hover {
+      background: rgba(216,90,48,0.22);
+      box-shadow: 0 4px 16px rgba(216,90,48,0.25);
+    }
+    .dropdown-trigger .arrow {
+      font-size: 0.65rem;
+      transition: transform 0.25s ease;
+      opacity: 0.7;
+    }
+    .dropdown.open .dropdown-trigger .arrow {
+      transform: rotate(180deg);
+    }
+
+    /* ===== DROPDOWN MENU ===== */
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 200px;
+      background: #1c110a;
+      border: 1px solid rgba(216,90,48,0.3);
+      border-radius: 12px;
+      padding: 6px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(216,90,48,0.08);
+      z-index: 500;
+      opacity: 0;
+      transform: translateY(-8px) scale(0.97);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .dropdown.open .dropdown-menu {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: all;
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 14px;
+      background: none;
+      border: none;
+      border-radius: 8px;
+      color: #FAF0E8;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .dropdown-item:hover {
+      background: rgba(216,90,48,0.15);
+      color: #fff;
+    }
+    .dropdown-item .item-icon {
+      font-size: 1rem;
+      width: 20px;
+      text-align: center;
+    }
+    .dropdown-item.danger:hover {
+      background: rgba(239,159,39,0.15);
+      color: #EF9F27;
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+      margin: 4px 0;
+    }
+
+    /* ===== POPUPS ===== */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .popup.active { display: flex; }
+
+    .popup-content {
+      background: #1c110a;
+      border: 1px solid #D85A30;
+      border-radius: 16px;
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-width: 320px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+      animation: popupIn 0.25s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    @keyframes popupIn {
+      from { transform: scale(0.93) translateY(16px); opacity: 0; }
+      to   { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .popup-content h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      color: #D85A30;
+      margin: 0 0 4px;
+      font-size: 1.3rem;
+    }
+
+    .popup-content input,
+    .popup-content select {
+      padding: 11px 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      color: #FAF0E8;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .popup-content input:focus,
+    .popup-content select:focus {
+      border-color: #D85A30;
+      box-shadow: 0 0 0 3px rgba(216,90,48,0.15);
+    }
+    .popup-content select option { background: #1c110a; }
+
+    .popup-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .btn-save {
+      flex: 1;
+      padding: 11px;
+      background: linear-gradient(135deg, #D85A30, #EF9F27);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-save:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-cancel {
+      padding: 11px 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #999;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-cancel:hover { background: rgba(255,255,255,0.09); color: #fff; }
   </style>
 </head>
 <body>
@@ -36,7 +271,10 @@
     <a href="Standings.html">Standings</a>
     <a href="Teams.html" class="active">Teams</a>
   </div>
-  <a href="about_us.html" class="cta">About Us</a>
+  <div class="nav-cta-group">
+    <a href="admin_login.html" class="cta">Admin</a>
+    <a href="about_us.html" class="cta">About Us</a>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -46,87 +284,106 @@
 </section>
 
 <!-- CONTENT -->
-<!-- CONTENT -->
 <main class="container">
 
-  <div id="teams-list"></div>
+  <!-- ACTION BAR met dropdowns -->
+  <div class="action-bar">
 
-  <div style="margin-top: 30px; text-align: center;">
-
-    <div style="margin-bottom: 20px;">
-      <button class="btn-primary" onclick="openAddTeamPopup()">+ Team toevoegen</button>
+    <!-- Teams dropdown -->
+    <div class="dropdown" id="dd-teams">
+      <button class="dropdown-trigger" onclick="toggleDropdown('dd-teams')">
+        🏟️ Teams
+        <span class="arrow">▼</span>
+      </button>
+      <div class="dropdown-menu">
+        <button class="dropdown-item" onclick="openAddTeamPopup(); closeAllDropdowns()">
+          <span class="item-icon">➕</span> Team toevoegen
+        </button>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item danger" onclick="openDeleteTeamPopup(); closeAllDropdowns()">
+          <span class="item-icon">🗑️</span> Team verwijderen
+        </button>
+      </div>
     </div>
 
-    <div style="margin-bottom: 20px;">
-      <button class="btn-primary" onclick="openDeleteTeamPopup()">- Team verwijderen</button>
-    </div>
-
-    <div style="margin-bottom: 20px;">
-      <button class="btn-primary" onclick="openAddPlayerPopup()">+ Player toevoegen</button>
-    </div>
-
-    <div style="margin-bottom: 20px;">
-      <button class="btn-primary" onclick="openDeletePlayerPopup()">- Player verwijderen</button>
+    <!-- Spelers dropdown -->
+    <div class="dropdown" id="dd-players">
+      <button class="dropdown-trigger" onclick="toggleDropdown('dd-players')">
+        👤 Spelers
+        <span class="arrow">▼</span>
+      </button>
+      <div class="dropdown-menu">
+        <button class="dropdown-item" onclick="openAddPlayerPopup(); closeAllDropdowns()">
+          <span class="item-icon">➕</span> Speler toevoegen
+        </button>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item danger" onclick="openDeletePlayerPopup(); closeAllDropdowns()">
+          <span class="item-icon">🗑️</span> Speler verwijderen
+        </button>
+      </div>
     </div>
 
   </div>
 
+  <!-- Teamlijst -->
+  <div id="teams-list"></div>
+
 </main>
 
-<style>
-.container{
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-}
+<!-- ===== POPUPS ===== -->
 
-.card{
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(216,90,48,0.2);
-  border-left: 5px solid #D85A30;
-  margin-bottom: 16px;
-  padding: 20px;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
+<!-- ADD TEAM -->
+<div id="team-popup" class="popup">
+  <div class="popup-content">
+    <h2>➕ Team toevoegen</h2>
+    <input type="text" id="team-name" placeholder="Team naam">
+    <select id="team-division">
+      <option value="">Kies divisie</option>
+    </select>
+    <div class="popup-actions">
+      <button class="btn-save" onclick="submitTeam()">Toevoegen</button>
+      <button class="btn-cancel" onclick="closePopups()">Annuleren</button>
+    </div>
+  </div>
+</div>
 
-.card:hover{
-  background: rgba(255,255,255,0.06);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-}
+<!-- DELETE TEAM -->
+<div id="delete-team-popup" class="popup">
+  <div class="popup-content">
+    <h2>🗑️ Team verwijderen</h2>
+    <select id="delete-team-select"></select>
+    <div class="popup-actions">
+      <button class="btn-save" onclick="submitDeleteTeam()">Verwijderen</button>
+      <button class="btn-cancel" onclick="closePopups()">Annuleren</button>
+    </div>
+  </div>
+</div>
 
-.card strong{
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.2rem;
-  color: white;
-}
+<!-- ADD PLAYER -->
+<div id="player-popup" class="popup">
+  <div class="popup-content">
+    <h2>➕ Speler toevoegen</h2>
+    <input type="text" id="player-name" placeholder="Speler naam">
+    <input type="number" id="player-age" placeholder="Leeftijd">
+    <select id="player-team"></select>
+    <div class="popup-actions">
+      <button class="btn-save" onclick="submitPlayer()">Toevoegen</button>
+      <button class="btn-cancel" onclick="closePopups()">Annuleren</button>
+    </div>
+  </div>
+</div>
 
-.section-title{
-  margin-top: 20px;
-  margin-bottom: 10px;
-  color: #D85A30;
-  font-weight: 600;
-}
-
-.player,
-.match{
-  padding: 10px;
-  margin-bottom: 8px;
-  background: rgba(255,255,255,0.03);
-  border-radius: 8px;
-  color: #FAF0E8;
-}
-
-.match.played{
-  border-left: 4px solid #D85A30;
-}
-
-.match.upcoming{
-  border-left: 4px solid #EF9F27;
-}
-</style>
+<!-- DELETE PLAYER -->
+<div id="delete-player-popup" class="popup">
+  <div class="popup-content">
+    <h2>🗑️ Speler verwijderen</h2>
+    <select id="delete-player-select"></select>
+    <div class="popup-actions">
+      <button class="btn-save" onclick="submitDeletePlayer()">Verwijderen</button>
+      <button class="btn-cancel" onclick="closePopups()">Annuleren</button>
+    </div>
+  </div>
+</div>
 
 <!-- DARK MODE TOGGLE -->
 <button id="theme-toggle" title="Toggle dark mode">☀️</button>
@@ -134,12 +391,49 @@
 <script src="script.js"></script>
 
 <script>
-  // --- Dark mode toggle ---
+  /* ===== DROPDOWN LOGIC ===== */
+  function toggleDropdown(id) {
+    const all = document.querySelectorAll('.dropdown');
+    all.forEach(dd => {
+      if (dd.id === id) {
+        dd.classList.toggle('open');
+      } else {
+        dd.classList.remove('open');
+      }
+    });
+  }
+
+  function closeAllDropdowns() {
+    document.querySelectorAll('.dropdown').forEach(dd => dd.classList.remove('open'));
+  }
+
+  // Sluit dropdowns bij klik buiten
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.dropdown')) closeAllDropdowns();
+  });
+
+  /* ===== POPUP LOGIC ===== */
+  function openAddTeamPopup()    { document.getElementById('team-popup').classList.add('active'); }
+  function openDeleteTeamPopup() { document.getElementById('delete-team-popup').classList.add('active'); }
+  function openAddPlayerPopup()  { document.getElementById('player-popup').classList.add('active'); }
+  function openDeletePlayerPopup() { document.getElementById('delete-player-popup').classList.add('active'); }
+
+  function closePopups() {
+    document.querySelectorAll('.popup').forEach(p => p.classList.remove('active'));
+  }
+
+  // Sluit popup bij klik op overlay
+  document.querySelectorAll('.popup').forEach(popup => {
+    popup.addEventListener('click', (e) => {
+      if (e.target === popup) closePopups();
+    });
+  });
+
+  /* ===== DARK MODE ===== */
   const lightCSS = 'style.css';
   const darkCSS  = 'styledark.css';
-
-  const link   = document.getElementById('theme-stylesheet');
-  const button = document.getElementById('theme-toggle');
+  const link     = document.getElementById('theme-stylesheet');
+  const button   = document.getElementById('theme-toggle');
 
   button.addEventListener('click', () => {
     const isDark = link.getAttribute('href') === darkCSS;
@@ -147,7 +441,6 @@
     button.textContent = isDark ? '☀️' : '🌙';
     localStorage.setItem('theme', isDark ? 'light' : 'dark');
   });
-
   if (localStorage.getItem('theme') === 'dark') {
     link.setAttribute('href', darkCSS);
     button.textContent = '🌙';
@@ -155,6 +448,7 @@
 </script>
 
 <script>
+/* ===== TEAMS DATA ===== */
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("teams-list");
 
@@ -166,9 +460,7 @@ document.addEventListener("DOMContentLoaded", () => {
   .then(([teams, players, matches]) => {
 
     const teamMap = {};
-    teams.forEach(team => {
-      teamMap[team.teamId] = team.name;
-    });
+    teams.forEach(team => { teamMap[team.teamId] = team.name; });
 
     const playersByTeam = {};
     players.forEach(player => {
@@ -177,38 +469,50 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const matchesByTeam = {};
-    teams.forEach(team => {
-      matchesByTeam[team.teamId] = { played: [], upcoming: [] };
-    });
+    teams.forEach(team => { matchesByTeam[team.teamId] = { played: [], upcoming: [] }; });
 
     const today = new Date();
     matches.forEach(match => {
-      const matchDate = new Date(match.matchDate);
-      const isPast = matchDate <= today;
-
+      const isPast = new Date(match.matchDate) <= today;
       if (matchesByTeam[match.homeTeamId]) {
-        isPast
-          ? matchesByTeam[match.homeTeamId].played.push(match)
-          : matchesByTeam[match.homeTeamId].upcoming.push(match);
+        isPast ? matchesByTeam[match.homeTeamId].played.push(match)
+               : matchesByTeam[match.homeTeamId].upcoming.push(match);
       }
       if (matchesByTeam[match.awayTeamId]) {
-        isPast
-          ? matchesByTeam[match.awayTeamId].played.push(match)
-          : matchesByTeam[match.awayTeamId].upcoming.push(match);
+        isPast ? matchesByTeam[match.awayTeamId].played.push(match)
+               : matchesByTeam[match.awayTeamId].upcoming.push(match);
       }
     });
 
+    // Vul dropdowns in de popups
+    const teamSelects = ['team-division', 'player-team', 'delete-team-select'];
+    teams.forEach(team => {
+      teamSelects.forEach(id => {
+        const sel = document.getElementById(id);
+        if (!sel) return;
+        const opt = document.createElement('option');
+        opt.value = team.teamId;
+        opt.textContent = team.name;
+        sel.appendChild(opt);
+      });
+    });
+    const delPlayerSel = document.getElementById('delete-player-select');
+    players.forEach(player => {
+      const opt = document.createElement('option');
+      opt.value = player.playerId;
+      opt.textContent = player.name;
+      delPlayerSel.appendChild(opt);
+    });
+
+    // Render teamkaarten
     container.innerHTML = "";
     teams.forEach(team => {
       const card = document.createElement("div");
       card.classList.add("card");
 
       const playersDiv = document.createElement("div");
-      playersDiv.classList.add("players");
       playersDiv.style.display = "none";
-
       const matchesDiv = document.createElement("div");
-      matchesDiv.classList.add("matches");
       matchesDiv.style.display = "none";
 
       card.innerHTML = `<strong>${team.name}</strong>`;
@@ -219,17 +523,16 @@ document.addEventListener("DOMContentLoaded", () => {
         matchesDiv.style.display = isOpen ? "none" : "block";
 
         if (!isOpen) {
-
           playersDiv.innerHTML = '<div class="section-title">Spelers:</div>';
           const teamPlayers = playersByTeam[team.teamId] || [];
           if (teamPlayers.length === 0) {
             playersDiv.innerHTML += '<div class="player">Geen spelers gevonden</div>';
           } else {
-            teamPlayers.forEach(player => {
-              const p = document.createElement("div");
-              p.classList.add("player");
-              p.textContent = player.name;
-              playersDiv.appendChild(p);
+            teamPlayers.forEach(p => {
+              const el = document.createElement("div");
+              el.classList.add("player");
+              el.textContent = p.name;
+              playersDiv.appendChild(el);
             });
           }
 
@@ -261,7 +564,7 @@ document.addEventListener("DOMContentLoaded", () => {
             upcoming.forEach(m => {
               const el = document.createElement("div");
               el.classList.add("match", "upcoming");
-              el.textContent = `${teamMap[m.homeTeamId]} vs ${teamMap[m.awayTeamId]} (${m.matchDate})`;
+              el.textContent = `${teamMap[m.homeTeamId]} vs ${teamMap[m.awayTeamId]} (${new Date(m.matchDate).toLocaleDateString('nl-NL')})`;
               matchesDiv.appendChild(el);
             });
           }
@@ -278,94 +581,7 @@ document.addEventListener("DOMContentLoaded", () => {
     container.innerHTML = "<p>Kon data niet laden.</p>";
   });
 });
-
 </script>
-<!-- TEAM POPUP -->
-<div id="team-popup" class="popup">
-  <div class="popup-content">
 
-    <h2>Team toevoegen</h2>
-
-    <input type="text" id="team-name" placeholder="Team naam">
-
-    <select id="team-division">
-      <option value="">Kies divisie</option>
-    </select>
-
-    <button onclick="submitTeam()">Toevoegen</button>
-    <button onclick="closePopups()">Sluiten</button>
-
-  </div>
-</div>
-
-<!-- PLAYER POPUP -->
-<div id="player-popup" class="popup">
-  <div class="popup-content">
-    <h2>Player toevoegen</h2>
-
-    <input type="text" id="player-name" placeholder="Player naam">
-    <input type="number" id="player-age" placeholder="Leeftijd">
-
-    <select id="player-team"></select>
-
-    <button onclick="submitPlayer()">Toevoegen</button>
-    <button onclick="closePopups()">Sluiten</button>
-  </div>
-</div>
-
-<!-- DELETE TEAM POPUP -->
-<div id="delete-team-popup" class="popup">
-  <div class="popup-content">
-    <h2>Team verwijderen</h2>
-
-    <select id="delete-team-select"></select>
-
-    <button onclick="submitDeleteTeam()">Verwijderen</button>
-    <button onclick="closePopups()">Sluiten</button>
-  </div>
-</div>
-
-<!-- DELETE PLAYER POPUP -->
-<div id="delete-player-popup" class="popup">
-  <div class="popup-content">
-    <h2>Player verwijderen</h2>
-
-    <select id="delete-player-select"></select>
-
-    <button onclick="submitDeletePlayer()">Verwijderen</button>
-    <button onclick="closePopups()">Sluiten</button>
-  </div>
-</div>
-
-<style>
-.popup{
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.6);
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-}
-
-.popup-content{
-  background:white;
-  padding:30px;
-  border-radius:12px;
-  display:flex;
-  flex-direction:column;
-  gap:15px;
-  min-width:300px;
-}
-
-.popup-content input,
-.popup-content select{
-  padding:10px;
-}
-
-</style>
 </body>
 </html>
