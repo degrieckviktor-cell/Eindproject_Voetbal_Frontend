@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | FootballIntel</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link id="theme-stylesheet" rel="stylesheet" href="Style.css">
+
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #0e0804;
+      color: #FAF0E8;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== BACKGROUND TEXTURE ===== */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(216,90,48,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 80% 80%, rgba(239,159,39,0.06) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: relative;
+      z-index: 10;
+    }
+
+    /* ===== LOGIN WRAPPER ===== */
+    .login-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== LOGIN CARD ===== */
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(216,90,48,0.25);
+      border-radius: 20px;
+      padding: 48px 40px;
+      backdrop-filter: blur(10px);
+      box-shadow:
+        0 0 0 1px rgba(216,90,48,0.08),
+        0 30px 60px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+      animation: cardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(28px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ===== LOCK ICON ===== */
+    .lock-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #D85A30, #EF9F27);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin: 0 auto 28px;
+      box-shadow: 0 8px 24px rgba(216,90,48,0.4);
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 8px 24px rgba(216,90,48,0.4); }
+      50%       { box-shadow: 0 8px 36px rgba(216,90,48,0.65); }
+    }
+
+    /* ===== HEADINGS ===== */
+    .login-card h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+
+    .login-card h1 span { color: #D85A30; }
+
+    .login-card .subtitle {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 36px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ===== FORM ===== */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #aaa;
+      margin-bottom: 8px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 13px 14px 13px 42px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: #FAF0E8;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: #D85A30;
+      background: rgba(216,90,48,0.06);
+      box-shadow: 0 0 0 3px rgba(216,90,48,0.15);
+    }
+
+    .form-group input::placeholder { color: #555; }
+
+    /* Toggle wachtwoord zichtbaarheid */
+    .toggle-pw {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0;
+      transition: color 0.2s;
+    }
+    .toggle-pw:hover { color: #D85A30; }
+
+    /* ===== FOUTMELDING ===== */
+    .error-msg {
+      display: none;
+      background: rgba(239,80,60,0.12);
+      border: 1px solid rgba(239,80,60,0.35);
+      border-radius: 8px;
+      color: #ff7a6a;
+      font-size: 0.85rem;
+      padding: 10px 14px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .error-msg.visible { display: block; animation: shake 0.35s ease; }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%,60%  { transform: translateX(-6px); }
+      40%,80%  { transform: translateX(6px); }
+    }
+
+    /* ===== SUBMIT BUTTON ===== */
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #D85A30 0%, #EF9F27 100%);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 6px 20px rgba(216,90,48,0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-login::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.2s;
+    }
+
+    .btn-login:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 28px rgba(216,90,48,0.5);
+    }
+
+    .btn-login:active { transform: translateY(1px); }
+
+    .btn-login.loading { pointer-events: none; opacity: 0.7; }
+    .btn-login.loading::after { background: rgba(0,0,0,0.15); }
+
+    /* ===== DIVIDER ===== */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0 20px;
+      color: #444;
+      font-size: 0.75rem;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    /* ===== BACK LINK ===== */
+    .back-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: #666;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: #D85A30; }
+
+    /* ===== SUCCESS OVERLAY ===== */
+    .success-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .success-overlay.visible { display: flex; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #D85A30, #EF9F27);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 0 40px rgba(216,90,48,0.6);
+      animation: popIn 0.4s cubic-bezier(0.22,1,0.36,1) 0.1s both;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    .success-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem;
+      color: #fff;
+      animation: popIn 0.4s cubic-bezier(0.22,1,0.36,1) 0.25s both;
+    }
+
+    /* ===== DARK MODE TOGGLE ===== */
+    #theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      z-index: 9999;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+      transition: transform 0.2s ease;
+    }
+    #theme-toggle:hover { transform: scale(1.2); }
+  </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">Football<span>Intel</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="matches.html">Matches</a>
+    <a href="Standings.html">Standings</a>
+    <a href="Teams.html">Teams</a>
+  </div>
+  <div class="nav-cta-group">
+    <a href="admin_login.html" class="cta active">Admin</a>
+    <a href="about_us.html" class="cta">About Us</a>
+  </div>
+</nav>
+
+<!-- LOGIN SECTION -->
+<div class="login-wrapper">
+  <div class="login-card">
+
+    <div class="lock-icon">🔐</div>
+
+    <h1>Admin <span>Login</span></h1>
+    <p class="subtitle">Toegang tot het beheerderspaneel</p>
+
+    <div class="error-msg" id="error-msg">
+      ❌ Ongeldig gebruikersnaam of wachtwoord
+    </div>
+
+    <div class="form-group">
+      <label for="username">Gebruikersnaam</label>
+      <div class="input-wrapper">
+        <span class="input-icon">👤</span>
+        <input
+          type="text"
+          id="username"
+          placeholder="Voer gebruikersnaam in"
+          autocomplete="username"
+        >
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Wachtwoord</label>
+      <div class="input-wrapper">
+        <span class="input-icon">🔑</span>
+        <input
+          type="password"
+          id="password"
+          placeholder="Voer wachtwoord in"
+          autocomplete="current-password"
+        >
+        <button class="toggle-pw" id="toggle-pw" type="button" title="Wachtwoord tonen">👁️</button>
+      </div>
+    </div>
+
+    <button class="btn-login" id="btn-login" onclick="handleLogin()">
+      Inloggen
+    </button>
+
+    <div class="divider">of</div>
+
+    <a href="index.html" class="back-link">← Terug naar Home</a>
+
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="success-overlay">
+  <div class="success-icon">✅</div>
+  <div class="success-text">Welkom terug, Admin!</div>
+</div>
+
+<!-- DARK MODE TOGGLE -->
+<button id="theme-toggle" title="Toggle dark mode">☀️</button>
+
+<script>
+  // ===== LOGIN LOGIC =====
+  // Verander dit naar de echte credentials of koppel aan je API
+  const ADMIN_USER = "admin";
+  const ADMIN_PASS = "football123";
+
+  function handleLogin() {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+    const errorMsg = document.getElementById("error-msg");
+    const btn      = document.getElementById("btn-login");
+
+    errorMsg.classList.remove("visible");
+    btn.textContent = "Bezig met inloggen…";
+    btn.classList.add("loading");
+
+    setTimeout(() => {
+      if (username === ADMIN_USER && password === ADMIN_PASS) {
+        // Succes
+        document.getElementById("success-overlay").classList.add("visible");
+        sessionStorage.setItem("adminLoggedIn", "true");
+        setTimeout(() => { window.location.href = "admin.html"; }, 1600);
+      } else {
+        // Fout
+        errorMsg.classList.add("visible");
+        btn.textContent = "Inloggen";
+        btn.classList.remove("loading");
+        document.getElementById("password").value = "";
+        document.getElementById("password").focus();
+      }
+    }, 700);
+  }
+
+  // Enter-toets ondersteuning
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") handleLogin();
+  });
+
+  // Wachtwoord tonen/verbergen
+  document.getElementById("toggle-pw").addEventListener("click", () => {
+    const pw  = document.getElementById("password");
+    const btn = document.getElementById("toggle-pw");
+    if (pw.type === "password") {
+      pw.type = "text";
+      btn.textContent = "🙈";
+    } else {
+      pw.type = "password";
+      btn.textContent = "👁️";
+    }
+  });
+
+  // ===== DARK MODE =====
+  const lightCSS = 'Style.css';
+  const darkCSS  = 'styledark.css';
+  const link     = document.getElementById('theme-stylesheet');
+  const toggle   = document.getElementById('theme-toggle');
+
+  toggle.addEventListener('click', () => {
+    const isDark = link.getAttribute('href') === darkCSS;
+    link.setAttribute('href', isDark ? lightCSS : darkCSS);
+    toggle.textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  });
+
+  if (localStorage.getItem('theme') === 'dark') {
+    link.setAttribute('href', darkCSS);
+    toggle.textContent = '🌙';
+  }
+</script>
+
+</body>
+</html>
