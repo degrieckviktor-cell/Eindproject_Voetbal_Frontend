@@ -352,18 +352,18 @@
     <p class="subtitle">Toegang tot het beheerderspaneel</p>
 
     <div class="error-msg" id="error-msg">
-      ❌ Ongeldig gebruikersnaam of wachtwoord
+      ❌ Ongeldig e-mailadres of wachtwoord
     </div>
 
     <div class="form-group">
-      <label for="username">Gebruikersnaam</label>
+      <label for="username">E-mailadres</label>
       <div class="input-wrapper">
         <span class="input-icon">👤</span>
         <input
-          type="text"
+          type="email"
           id="username"
-          placeholder="Voer gebruikersnaam in"
-          autocomplete="username"
+          placeholder="Voer e-mailadres in"
+          autocomplete="email"
         >
       </div>
     </div>
@@ -404,35 +404,48 @@
 
 <script>
   // ===== LOGIN LOGIC =====
-  // Verander dit naar de echte credentials of koppel aan je API
-  const ADMIN_USER = "admin";
-  const ADMIN_PASS = "football123";
-
   function handleLogin() {
-    const username = document.getElementById("username").value.trim();
+    const email    = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value;
     const errorMsg = document.getElementById("error-msg");
     const btn      = document.getElementById("btn-login");
+
+    if (!email || !password) {
+      errorMsg.textContent = "❌ Vul alle velden in.";
+      errorMsg.classList.add("visible");
+      return;
+    }
 
     errorMsg.classList.remove("visible");
     btn.textContent = "Bezig met inloggen…";
     btn.classList.add("loading");
 
-    setTimeout(() => {
-      if (username === ADMIN_USER && password === ADMIN_PASS) {
-        // Succes
-        document.getElementById("success-overlay").classList.add("visible");
-        sessionStorage.setItem("adminLoggedIn", "true");
-        setTimeout(() => { window.location.href = "admin.html"; }, 1600);
-      } else {
-        // Fout
-        errorMsg.classList.add("visible");
-        btn.textContent = "Inloggen";
-        btn.classList.remove("loading");
-        document.getElementById("password").value = "";
-        document.getElementById("password").focus();
-      }
-    }, 700);
+    fetch("http://localhost:5153/api/Admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("Ongeldige inloggegevens");
+      return response.json();
+    })
+    .then(data => {
+      console.log("Admin ingelogd:", data);
+      sessionStorage.setItem("adminLoggedIn", "true");
+      document.getElementById("success-overlay").classList.add("visible");
+      setTimeout(() => { window.location.href = "admin.html"; }, 1600);
+    })
+    .catch(() => {
+      errorMsg.textContent = "❌ Ongeldig e-mailadres of wachtwoord";
+      errorMsg.classList.add("visible");
+      btn.textContent = "Inloggen";
+      btn.classList.remove("loading");
+      document.getElementById("password").value = "";
+      document.getElementById("password").focus();
+    });
   }
 
   // Enter-toets ondersteuning

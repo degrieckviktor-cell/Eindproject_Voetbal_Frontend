@@ -613,3 +613,90 @@ function submitDeletePlayer() {
         }
     });
 }
+// ================================
+// ADMIN
+// ================================
+
+// GET: haal admin info op
+document.addEventListener("DOMContentLoaded", () => {
+    fetch("http://localhost:5153/api/Admin")
+        .then(response => response.json())
+        .then(data => {
+            console.log("Admin:", data);
+        })
+        .catch(error => {
+            console.error("Fout bij ophalen admin:", error);
+        });
+});
+
+// POST: login als admin
+function loginAdmin() {
+    const email = document.getElementById("admin-email").value;
+    const password = document.getElementById("admin-password").value;
+
+    if (!email || !password) {
+        alert("Vul een email en wachtwoord in.");
+        return;
+    }
+
+    fetch("http://localhost:5153/api/Admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            email: email,
+            password: password
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Admin ingelogd:", data);
+        })
+        .catch(error => {
+            console.error("Fout bij inloggen:", error);
+        });
+}
+
+// PUT: pas admin aan
+function updateAdmin() {
+    fetch("http://localhost:5153/api/Admin")
+        .then(response => response.json())
+        .then(admins => {
+            const id = admins[0].adminId;
+            fetch(`http://localhost:5153/api/Admin/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    adminId: id,
+                    email: "nieuw@email.com",
+                    password: "NieuwWachtwoord123"
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Admin aangepast:", data);
+                })
+                .catch(error => {
+                    console.error("Fout bij aanpassen admin:", error);
+                });
+        });
+}
+
+// DELETE: verwijder admin
+function deleteAdmin() {
+    fetch("http://localhost:5153/api/Admin")
+        .then(response => response.json())
+        .then(admins => {
+            const id = admins[0].adminId;
+            fetch(`http://localhost:5153/api/Admin/${id}`, {
+                method: "DELETE"
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log("Admin verwijderd met AdminId:", id);
+                    }
+                })
+                .catch(error => {
+                    console.error("Fout bij verwijderen admin:", error);
+                });
+        });
+}
