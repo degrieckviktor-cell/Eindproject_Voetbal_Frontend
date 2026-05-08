@@ -32,7 +32,7 @@
 
 <!-- NAVBAR -->
 <nav class="navbar">
-    <div class="logo">Football<span>Intel</span></div>
+    <div class="logo" id="secret-logo" style="cursor: pointer; user-select: none;">Football<span>Intel</span></div>
 
     <div class="nav-links">
         <a href="index.html" class="active">Home</a>
@@ -45,7 +45,84 @@
   <a href="about_us.html" class="cta">About Us</a>
 </div>
 </nav>
+<div id="secret-overlay" style="
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+">
+  <div id="secret-popup" style="
+    background: rgb(5, 5, 5);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    max-width: 360px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    animation: popIn 0.25s ease;
+  ">
+    <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🗺️</div>
+    <h2 style="margin: 0 0 0.75rem; font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem;">Wil je echt de</h2>
+    <h2 style="margin: 0 0 1.25rem; font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem;">Secret Goon Map openen?</h2>
+    <div style="display: flex; gap: 12px; justify-content: center;">
+      <button id="secret-yes" style="
+        padding: 0.6rem 1.4rem;
+        background: #1a1a2e;
+        color: rgb(255, 3, 3);
+        border: none;
+        border-radius: 8px;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.95rem;
+        cursor: pointer;
+      ">Ja, doe het</button>
+      <button id="secret-no" style="
+        padding: 0.6rem 1.4rem;
+        background: transparent;
+        color: #e30303d8;
+        border: 2px solid #1a1a2e;
+        border-radius: 8px;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.95rem;
+        cursor: pointer;
+      ">Nee, terug</button>
+    </div>
+  </div>
+</div>
 
+<style>
+  @keyframes popIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+  }
+</style>
+
+<script>
+  const overlay   = document.getElementById('secret-overlay');
+  const logo      = document.getElementById('secret-logo');
+  const btnYes    = document.getElementById('secret-yes');
+  const btnNo     = document.getElementById('secret-no');
+
+  logo.addEventListener('click', () => {
+    overlay.style.display = 'flex';
+  });
+
+  btnNo.addEventListener('click', () => {
+    overlay.style.display = 'none';
+  });
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.style.display = 'none';
+  });
+
+  btnYes.addEventListener('click', () => {
+    overlay.style.display = 'none';
+    // 👇 Redirect here to wherever your secret goon map lives
+    window.location.href = 'goon-map.html';
+  });
+</script>
 <!-- HERO -->
 <section class="hero">
     <h1>
