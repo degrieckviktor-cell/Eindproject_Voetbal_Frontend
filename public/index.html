@@ -25,6 +25,104 @@
       #theme-toggle:hover {
         transform: scale(1.2);
       }
+
+      /* ── Flappy Bird button ── */
+      #flappy-btn {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: #fff;
+        border: 2px solid rgba(255,255,255,0.12);
+        border-radius: 50px;
+        padding: 0.55rem 1.2rem;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        letter-spacing: 0.02em;
+      }
+      #flappy-btn:hover {
+        transform: translateY(-2px) scale(1.04);
+        box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+      }
+      #flappy-btn .bird-icon {
+        font-size: 1.2rem;
+        animation: flap 0.5s infinite alternate;
+      }
+      @keyframes flap {
+        from { transform: translateY(0); }
+        to   { transform: translateY(-4px); }
+      }
+
+      /* ── Flappy Bird modal ── */
+      #flappy-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.75);
+        z-index: 100000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(6px);
+      }
+      #flappy-modal {
+        background: #0d0d1a;
+        border: 1.5px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+        animation: popIn 0.25s ease;
+      }
+      @keyframes popIn {
+        from { transform: scale(0.85); opacity: 0; }
+        to   { transform: scale(1);    opacity: 1; }
+      }
+      #flappy-modal h2 {
+        margin: 0;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.1rem;
+        color: #fff;
+        letter-spacing: 0.05em;
+      }
+      #flappy-modal h2 span { color: #e8c55a; }
+      #flappy-close {
+        background: rgba(255,255,255,0.08);
+        border: none;
+        color: #aaa;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.8rem;
+        padding: 0.4rem 1.2rem;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      #flappy-close:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+      /* ── Canvas ── */
+      #flappy-canvas {
+        border-radius: 12px;
+        display: block;
+        cursor: pointer;
+        image-rendering: pixelated;
+      }
+
+      #flappy-hint {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.35);
+        margin: -0.4rem 0 0;
+      }
     </style>
 </head>
 
@@ -40,11 +138,13 @@
         <a href="Standings.html">Standings</a>
         <a href="Teams.html">Teams</a>
     </div>
-<div class="nav-cta-group">
-  <a href="admin.html" class="cta">Admin</a>
-  <a href="about_us.html" class="cta">About Us</a>
-</div>
+    <div class="nav-cta-group">
+      <a href="admin.html" class="cta">Admin</a>
+      <a href="about_us.html" class="cta">About Us</a>
+    </div>
 </nav>
+
+<!-- Secret Goon Map overlay -->
 <div id="secret-overlay" style="
   display: none;
   position: fixed;
@@ -105,46 +205,47 @@
   const btnYes    = document.getElementById('secret-yes');
   const btnNo     = document.getElementById('secret-no');
 
-  logo.addEventListener('click', () => {
-    overlay.style.display = 'flex';
-  });
-
-  btnNo.addEventListener('click', () => {
-    overlay.style.display = 'none';
-  });
-
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) overlay.style.display = 'none';
-  });
-
+  logo.addEventListener('click', () => { overlay.style.display = 'flex'; });
+  btnNo.addEventListener('click', () => { overlay.style.display = 'none'; });
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.style.display = 'none'; });
   btnYes.addEventListener('click', () => {
     overlay.style.display = 'none';
-    // 👇 Redirect here to wherever your secret goon map lives
     window.location.href = 'goon-map.html';
   });
 </script>
+
 <!-- HERO -->
 <section class="hero">
-    <h1>
-        Football <span>Intelligence</span>
-    </h1>
-
-    <p>
-        Een futuristisch platform waar data, strategie en inzicht samenkomen in een warme high-end interface.
-    </p>
+    <h1>Football <span>Intelligence</span></h1>
+    <p>Een futuristisch platform waar data, strategie en inzicht samenkomen in een warme high-end interface.</p>
 </section>
+
+<!-- ══════════════ FLAPPY BIRD BUTTON ══════════════ -->
+<button id="flappy-btn" title="Speel Flappy Bird">
+  <span class="bird-icon">🐦</span>
+  Flappy Bird
+</button>
+
+<!-- ══════════════ FLAPPY BIRD MODAL ══════════════ -->
+<div id="flappy-overlay">
+  <div id="flappy-modal">
+    <h2>⚽ <span>Flappy</span> Bird</h2>
+    <canvas id="flappy-canvas" width="320" height="480"></canvas>
+    <p id="flappy-hint">Klik / Spatie om te vliegen</p>
+    <button id="flappy-close">✕ Sluiten</button>
+  </div>
+</div>
 
 <!-- DARK MODE TOGGLE -->
 <button id="theme-toggle" title="Toggle dark mode">☀️</button>
 
 <script src="script.js"></script>
-
+<script src="flappy.js"></script>
 <script>
   const lightCSS = 'Style.css';
   const darkCSS  = 'Styledark.css';
-
-  const link   = document.getElementById('theme-stylesheet');
-  const button = document.getElementById('theme-toggle');
+  const link     = document.getElementById('theme-stylesheet');
+  const button   = document.getElementById('theme-toggle');
 
   function toggleTheme() {
     const isDark = link.getAttribute('href') === darkCSS;
@@ -154,8 +255,6 @@
   }
 
   button.addEventListener('click', toggleTheme);
-
-  // Remember preference on page load
   if (localStorage.getItem('theme') === 'dark') {
     link.setAttribute('href', darkCSS);
     button.textContent = '🌙';

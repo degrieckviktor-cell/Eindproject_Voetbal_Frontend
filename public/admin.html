@@ -438,15 +438,58 @@
       document.getElementById("success-overlay").classList.add("visible");
       setTimeout(() => { window.location.href = "admin.html"; }, 1600);
     })
-    .catch(() => {
-      errorMsg.textContent = "❌ Ongeldig e-mailadres of wachtwoord";
-      errorMsg.classList.add("visible");
-      btn.textContent = "Inloggen";
-      btn.classList.remove("loading");
-      document.getElementById("password").value = "";
-      document.getElementById("password").focus();
-    });
-  }
+ .catch(() => {
+  errorMsg.textContent = "❌ Ongeldig e-mailadres of wachtwoord";
+  errorMsg.classList.add("visible");
+  btn.textContent = "Inloggen";
+  btn.classList.remove("loading");
+  document.getElementById("password").value = "";
+  document.getElementById("password").focus();
+
+  // Rickroll popup
+  const overlay = document.createElement("div");
+  overlay.style.cssText = `
+    position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+    z-index: 99999; display: flex; align-items: center;
+    justify-content: center; flex-direction: column; gap: 16px;
+    animation: fadeIn 0.3s ease;
+  `;
+
+  overlay.innerHTML = `
+    <div style="
+      background: #1a1a1a; border: 1px solid rgba(216,90,48,0.4);
+      border-radius: 20px; padding: 32px; max-width: 560px; width: 90%;
+      text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    ">
+      <p style="font-family:'Space Grotesk',sans-serif; font-size:1.2rem;
+        color:#fff; margin-bottom: 20px;">🎵 Verkeerd wachtwoord... je weet wat dat betekent!</p>
+      <div style="position:relative; padding-bottom:56.25%; height:0; border-radius:12px; overflow:hidden;">
+        <iframe
+          src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+          style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <button onclick="this.closest('[data-rickroll]').remove()" style="
+        margin-top: 20px; padding: 10px 28px;
+        background: linear-gradient(135deg, #D85A30, #EF9F27);
+        border: none; border-radius: 10px; color: #fff;
+        font-family:'Space Grotesk',sans-serif; font-size:0.95rem;
+        font-weight:600; cursor:pointer;
+      ">Sluiten</button>
+    </div>
+  `;
+
+  overlay.setAttribute("data-rickroll", "");
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  document.body.appendChild(overlay);
+});
+    };
+  
 
   // Enter-toets ondersteuning
   document.addEventListener("keydown", (e) => {
