@@ -3,30 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Standings</title>
+  <title>Standings | FootballIntel</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <link id="theme-stylesheet" rel="stylesheet" href="Style.css">
- <style>
-      #theme-toggle {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: none;
-        border: none;
-        font-size: 1.8rem;
-        cursor: pointer;
-        z-index: 9999;
-        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-        transition: transform 0.2s ease;
-      }
-      #theme-toggle:hover {
-        transform: scale(1.2);
-      }
-    </style>
+  <style>
+    #theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      z-index: 9999;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+      transition: transform 0.2s ease;
+    }
+    #theme-toggle:hover {
+      transform: scale(1.2);
+    }
+  </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar">
   <div class="logo">Football<span>Intel</span></div>
   <div class="nav-links">
@@ -35,19 +34,17 @@
     <a href="Standings.html" class="active">Standings</a>
     <a href="Teams.html">Teams</a>
   </div>
- <div class="nav-cta-group">
-  <a href="admin.html" class="cta">Admin</a>
-  <a href="about_us.html" class="cta">About Us</a>
-</div>
+  <div class="nav-cta-group">
+    <a href="admin.html" class="cta">Admin</a>
+    <a href="about_us.html" class="cta">About Us</a>
+  </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
   <h1>League <span>Standings</span></h1>
   <p>Analyseer de ranglijst van teams in een warm, futuristisch dashboard.</p>
 </section>
 
-<!-- CONTENT -->
 <main class="container">
   <table class="table">
     <thead>
@@ -67,119 +64,10 @@
   </table>
 </main>
 
-<script src="script.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const tbody = document.getElementById("standings-body");
-
-    Promise.all([
-      fetch("http://localhost:5153/api/match").then(r => r.json()),
-      fetch("http://localhost:5153/api/Team").then(r => r.json())
-    ])
-    .then(([matches, teams]) => {
-
-      // Maak opzoektabel teamId -> teamnaam
-      const teamMap = {};
-      teams.forEach(team => {
-        teamMap[team.teamId] = team.name;
-      });
-
-      // Bereken standings vanuit matches
-      const standings = {};
-
-      teams.forEach(team => {
-        standings[team.teamId] = {
-          team: team.name,
-          played: 0,
-          wins: 0,
-          draws: 0,
-          losses: 0,
-          goalsFor: 0,
-          goalsAgainst: 0,
-          points: 0
-        };
-      });
-
-      matches.forEach(match => {
-        const home = match.homeTeamId;
-        const away = match.awayTeamId;
-        const homeScore = match.homeScore;
-        const awayScore = match.awayScore;
-
-        if (!standings[home] || !standings[away]) return;
-
-        standings[home].played++;
-        standings[away].played++;
-        standings[home].goalsFor += homeScore;
-        standings[home].goalsAgainst += awayScore;
-        standings[away].goalsFor += awayScore;
-        standings[away].goalsAgainst += homeScore;
-
-        if (homeScore > awayScore) {
-          standings[home].wins++;
-          standings[home].points += 3;
-          standings[away].losses++;
-        } else if (homeScore < awayScore) {
-          standings[away].wins++;
-          standings[away].points += 3;
-          standings[home].losses++;
-        } else {
-          standings[home].draws++;
-          standings[home].points += 1;
-          standings[away].draws++;
-          standings[away].points += 1;
-        }
-      });
-
-      // Sorteer op punten
-      const sorted = Object.values(standings).sort((a, b) => b.points - a.points);
-
-      // Render de tabel
-      tbody.innerHTML = "";
-      sorted.forEach((team, index) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${index + 1}</td>
-          <td class="team">${team.team}</td>
-          <td>${team.played}</td>
-          <td>${team.wins}</td>
-          <td>${team.draws}</td>
-          <td>${team.losses}</td>
-          <td>${team.goalsFor}</td>
-          <td>${team.goalsAgainst}</td>
-          <td>${team.points}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    })
-    .catch(error => {
-      console.error("Fout bij ophalen data:", error);
-      tbody.innerHTML = "<tr><td colspan='9'>Kon data niet laden.</td></tr>";
-    });
-  });
-</script>
-<!-- DARK MODE TOGGLE -->
 <button id="theme-toggle" title="Toggle dark mode">☀️</button>
 
-<script>
-  const lightCSS = 'Style.css';
-  const darkCSS  = 'styledark.css';
-
-  const link   = document.getElementById('theme-stylesheet');
-  const button = document.getElementById('theme-toggle');
-
-  button.addEventListener('click', () => {
-    const isDark = link.getAttribute('href') === darkCSS;
-    link.setAttribute('href', isDark ? lightCSS : darkCSS);
-    button.textContent = isDark ? '☀️' : '🌙';
-    localStorage.setItem('theme', isDark ? 'light' : 'dark');
-  });
-
-  if (localStorage.getItem('theme') === 'dark') {
-    link.setAttribute('href', darkCSS);
-    button.textContent = '🌙';
-  }
-</script>
+<script src="standings.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
