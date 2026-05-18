@@ -105,3 +105,9 @@ document.addEventListener("DOMContentLoaded", () => {
     button.textContent = '🌙';
   }
 });
+function logoutAdmin() {
+  localStorage.removeItem("adminKey");
+  localStorage.removeItem("adminEmail");
+
+  window.location.href = "index.html"; // of login page
+}

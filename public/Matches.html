@@ -178,6 +178,8 @@
     <a href="Teams.html">Teams</a>
   </div>
   <div class="nav-cta-group">
+    
+    <a href onclick="logoutAdmin()" class="logout-icon" title="Uitloggen">🚪</a>
     <a href="admin.html" class="cta">Admin</a>
     <a href="about_us.html" class="cta">About Us</a>
   </div>
@@ -191,7 +193,9 @@
   <div id="matches-list"></div>
 
   <div style="margin-top: 30px; text-align: center;">
-    <button class="btn-primary" onclick="addMatch()">+ Nieuwe Match Toevoegen</button>
+    <button id="add-match-btn" class="btn-primary" onclick="addMatch()">
+      + Nieuwe Match Toevoegen
+    </button>
   </div>
 </main>
 
@@ -226,17 +230,20 @@
     <input type="number" id="edit-home-score">
     <label>Score Uit</label>
     <input type="number" id="edit-away-score">
-    <div style="margin-top: 20px;">
+    
+      <div style="margin-top: 20px;">
       <button class="btn-save" onclick="saveEdit()">Opslaan</button>
       <button class="btn-cancel" onclick="closeEdit()">Annuleren</button>
     </div>
+    
+    
   </div>
 </div>
 
 <button id="theme-toggle" title="Toggle dark mode">☀️</button>
 
 <script src="matches.js"></script>
-<script src="script.js"></script>
+<script src="admin.js"></script>
 
 </body>
 </html>

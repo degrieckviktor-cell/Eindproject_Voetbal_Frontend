@@ -1,4 +1,11 @@
 // ================================
+// ADMIN CHECK
+// ================================
+function isAdmin() {
+  return localStorage.getItem("adminKey") === "footballintel_admin_2026";
+}
+
+// ================================
 // DROPDOWN LOGIC
 // ================================
 
@@ -24,6 +31,13 @@ document.addEventListener('click', (e) => {
 // ================================
 // POPUP LOGIC
 // ================================
+function requireAdmin() {
+  if (!isAdmin()) {
+    alert("Geen toegang");
+    return false;
+  }
+  return true;
+}
 
 function openAddTeamPopup()      { document.getElementById('team-popup').classList.add('active'); }
 function openDeleteTeamPopup()   { document.getElementById('delete-team-popup').classList.add('active'); }
@@ -40,6 +54,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.target === popup) closePopups();
     });
   });
+});
+
+// ================================
+// ADMIN BAR VISIBILITY
+// ================================
+document.addEventListener("DOMContentLoaded", () => {
+  const bar = document.getElementById("admin-action-bar");
+  if (bar) bar.style.display = isAdmin() ? "flex" : "none";
 });
 
 // ================================
@@ -202,3 +224,9 @@ document.addEventListener("DOMContentLoaded", () => {
     container.innerHTML = "<p>Kon data niet laden.</p>";
   });
 });
+function logoutAdmin() {
+  localStorage.removeItem("adminKey");
+  localStorage.removeItem("adminEmail");
+
+  window.location.href = "index.html"; // of login page
+}

@@ -139,6 +139,7 @@
         <a href="Teams.html">Teams</a>
     </div>
     <div class="nav-cta-group">
+      <a href onclick="logoutAdmin()" class="logout-icon" title="Uitloggen">🚪</a>
       <a href="admin.html" class="cta">Admin</a>
       <a href="about_us.html" class="cta">About Us</a>
     </div>
@@ -212,6 +213,12 @@
     overlay.style.display = 'none';
     window.location.href = 'goon-map.html';
   });
+  function logoutAdmin() {
+  localStorage.removeItem("adminKey");
+  localStorage.removeItem("adminEmail");
+
+  window.location.href = "index.html"; // of login page
+}
 </script>
 
 <!-- HERO -->

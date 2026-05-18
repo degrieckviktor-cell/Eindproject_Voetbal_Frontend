@@ -260,7 +260,8 @@
     <a href="Teams.html" class="active">Teams</a>
   </div>
   <div class="nav-cta-group">
-    <a href="admin_login.html" class="cta">Admin</a>
+    <a href onclick="logoutAdmin()" class="logout-icon" title="Uitloggen">🚪</a>
+    <a href="admin.html" class="cta">Admin</a>
     <a href="about_us.html" class="cta">About Us</a>
   </div>
 </nav>
@@ -272,7 +273,8 @@
 
 <main class="container">
 
-  <div class="action-bar">
+  <!-- Verborgen voor niet-admins, wordt zichtbaar via teams.js als isAdmin() true is -->
+  <div class="action-bar" id="admin-action-bar" style="display: none;">
     <div class="dropdown" id="dd-teams">
       <button class="dropdown-trigger" onclick="toggleDropdown('dd-teams')">
         🏟️ Teams

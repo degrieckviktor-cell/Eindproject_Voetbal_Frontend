@@ -321,3 +321,9 @@ h1, h2, h3 {
 
 .team-member h2 { margin: 0 0 6px; color: var(--text-main); }
 .team-member p  { margin: 4px 0; color: var(--text-muted); }
+.admin-only {
+  display: none;
+}
+.hidden {
+  display: none;
+}
